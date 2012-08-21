@@ -4,12 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 public class Menu implements ActionListener {
 
@@ -29,12 +27,9 @@ public class Menu implements ActionListener {
 		else if((e.getActionCommand().equals("New"))){
 		
 			gui.gridFrame.setVisible(false);
-			gui.mainFrame.remove(gui.gridFrame);
-			//gui.grid = new Grid();
-			JButton test = new JButton("Works");
-			gui.gridFrame = new JScrollPane(test);
-			gui.mainFrame.add(gui.gridFrame);
-			System.out.println(mainFrame.contains(gui.gridFrame));
+			gui.grid = new Grid(gui, 500, 500);
+			gui.gridFrame.setViewportView(gui.grid);
+			gui.mainFrame.validate();
 			gui.gridFrame.setVisible(true);
 		
 		}

@@ -1,10 +1,7 @@
 package plainswalker.GUI;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
@@ -34,8 +31,7 @@ public class Interface{
 		mainFrame.add(upperFrame, BorderLayout.NORTH);
 		upperFrame.setVisible(true);
 		
-		grid = new Grid();
-		gridFrame = new JScrollPane(grid);
+		gridFrame = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		mainFrame.add(gridFrame);
 		
 		menu = new Menu(upperFrame, this);

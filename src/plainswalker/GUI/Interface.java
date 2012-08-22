@@ -7,18 +7,17 @@ import javax.swing.*;
 
 public class Interface{
 	
+	protected enum placerMode {HERD_ANIMAL, WAYPOINT, PREDATOR};
+	protected placerMode curMode = placerMode.HERD_ANIMAL;
+	
 	protected JFrame mainFrame;
 	private JPanel upperFrame;
 	protected JScrollPane gridFrame;
 	
-	private Menu menu;
 	protected Grid grid;
+	private JTabbedPane tabs;
 	
-	//Toolbar items
-	private JToolBar tools;
-	private JButton waypointButton;
-	private JButton herdAnimalButton;
-	private JButton predatorButton;
+	protected JLabel tileData;
 	
 	public Interface(){
 		
@@ -34,28 +33,19 @@ public class Interface{
 		gridFrame = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		mainFrame.add(gridFrame);
 		
-		menu = new Menu(upperFrame, this);
+		tabs = new JTabbedPane();
+		tabs.addTab("Herds", new JPanel());
+		tabs.addTab("Predators", new JPanel());
+		tabs.addTab("Waypoints", new JPanel());
+		mainFrame.add(tabs, BorderLayout.WEST);
 		
-		buildToolbar();
+		new Menu(upperFrame, this);
+		
+		tileData = new JLabel("x: y: h:");
+		mainFrame.add(tileData, BorderLayout.SOUTH);
+		
+		new ToolBar(upperFrame, this);
 	
-	}
-	
-	public void buildToolbar(){
-		
-		tools = new JToolBar();
-		herdAnimalButton = new JButton("H");
-		herdAnimalButton.setToolTipText("Animal Placement Mode");
-		tools.add(herdAnimalButton);
-		waypointButton = new JButton("W");
-		waypointButton.setToolTipText("Waypoint Placement Mode");
-		tools.add(waypointButton);
-		predatorButton = new JButton("P");
-		predatorButton.setToolTipText("Predator Placement Mode");
-		tools.add(predatorButton);
-		tools.setFloatable(false);
-		
-		upperFrame.add(tools, BorderLayout.SOUTH);
-		
 	}
 	
 	public void drawInterface(){

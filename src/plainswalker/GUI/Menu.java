@@ -1,9 +1,12 @@
+//Contains all interface GUI functionality
+
 package plainswalker.GUI;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -11,7 +14,7 @@ import javax.swing.JPanel;
 
 public class Menu implements ActionListener {
 
-	//Menu items
+	//File Menu items
 	private Interface gui;
 	protected JMenuBar menu;
 	protected JMenu fileMenu;
@@ -20,10 +23,17 @@ public class Menu implements ActionListener {
 	protected JMenuItem saveSim;
 	protected JMenuItem quit;
 	
+	//View Menu Items
+	protected JMenu viewMenu;
+	protected JCheckBoxMenuItem showTerrain;
+	
 	public void actionPerformed(ActionEvent e) {
 		
+		//Quit
 		if(e.getActionCommand().equals("Quit"))
 			System.exit(0);
+		
+		//New Simulation
 		else if((e.getActionCommand().equals("New"))){
 		
 			gui.gridFrame.setVisible(false);
@@ -36,11 +46,13 @@ public class Menu implements ActionListener {
 		
 	}
 	
+	//Set up all menu items
 	public Menu(JPanel container, Interface inter){
 		
 		gui = inter;
 		menu = new JMenuBar();
 		
+		//File Menu
 		fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('F');
 		menu.add(fileMenu);
@@ -69,6 +81,17 @@ public class Menu implements ActionListener {
 		quit.addActionListener(this);
 		
 		fileMenu.add(quit);
+		
+		//View Menu
+		viewMenu = new JMenu("View");
+		fileMenu.setMnemonic('V');
+		menu.add(viewMenu);
+		
+		showTerrain = new JCheckBoxMenuItem("View Tile Heights");
+		showTerrain.setMnemonic('H');
+		showTerrain.setActionCommand("Show Heights");
+		showTerrain.addActionListener(this);
+		viewMenu.add(showTerrain);
 		
 		container.add(menu, BorderLayout.NORTH);
 		

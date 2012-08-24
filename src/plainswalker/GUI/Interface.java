@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Toolkit;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import plainswalker.simulation.Simulation;
 
 public class Interface{
 	
@@ -15,9 +18,14 @@ public class Interface{
 	protected JScrollPane gridFrame;
 	
 	protected Grid grid;
+	protected ToolBar tools;
+	
 	private JTabbedPane tabs;
+	private JTree animTree;
 	
 	protected JLabel tileData;
+	
+	protected Simulation sim;
 	
 	public Interface(){
 		
@@ -34,7 +42,19 @@ public class Interface{
 		mainFrame.add(gridFrame);
 		
 		tabs = new JTabbedPane();
-		tabs.addTab("Herds", new JPanel());
+		
+		JPanel herdPanel = new JPanel();
+		DefaultMutableTreeNode herdRoot = new DefaultMutableTreeNode("Herds");
+		
+		DefaultMutableTreeNode herdOne = new DefaultMutableTreeNode("Herd 1");
+		herdRoot.add(herdOne);
+		DefaultMutableTreeNode unassigned = new DefaultMutableTreeNode("Unassigned");
+		herdRoot.add(unassigned);
+		
+		animTree = new JTree(herdRoot);
+		herdPanel.add(animTree);
+		
+		tabs.addTab("Herds", herdPanel);
 		tabs.addTab("Predators", new JPanel());
 		tabs.addTab("Waypoints", new JPanel());
 		mainFrame.add(tabs, BorderLayout.WEST);
@@ -44,13 +64,19 @@ public class Interface{
 		tileData = new JLabel("x: y: h:");
 		mainFrame.add(tileData, BorderLayout.SOUTH);
 		
-		new ToolBar(upperFrame, this);
+		tools = new ToolBar(upperFrame, this);
 	
 	}
 	
 	public void drawInterface(){
 		
 		mainFrame.setVisible(true);
+		
+	}
+	
+	public JFrame getMain(){
+		
+		return mainFrame;
 		
 	}
 	

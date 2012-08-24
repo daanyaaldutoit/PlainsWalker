@@ -16,15 +16,13 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
 
-import plainswalker.GUI.Interface.placerMode;
-import plainswalker.simulation.Tile;
+import plainswalker.simulation.*;
 
 public class Grid extends JPanel implements MouseListener, MouseMotionListener, Scrollable{
 
 	private Interface gui;
 	private static final long serialVersionUID = 1L;
 	protected int length, width;
-	private Tile[][] tiles;
 	private ArrayList<HerdAnimalPlacer> herdAnimals;
 	
 	//Set up grid parameters
@@ -34,11 +32,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener, 
 		herdAnimals = new ArrayList<HerdAnimalPlacer>();
 		length = l;
 		width = w;
-		tiles = new Tile[length][width];
-		for(int i = 0; i < length; ++i)
-			for(int j = 0; j < width; ++j)
-				tiles[i][j] = new Tile(j, i, 0f);
-		
+		gui.sim = new Simulation(gui, l,w);
 		this.setLayout(null);
 		
 		addMouseListener(this);
@@ -67,16 +61,16 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener, 
 	public void mouseClicked(MouseEvent e) {
 		
 		//Place Herd Animal
-		if(gui.curMode == placerMode.HERD_ANIMAL){
+		if(gui.curMode == Interface.placerMode.HERD_ANIMAL){
 		
 			setVisible(false);
-			System.out.println("Animal Placed");
-			HerdAnimalPlacer h = new HerdAnimalPlacer(new Point(e.getX(), e.getY()));
+			HerdAnimalPlacer h = new HerdAnimalPlacer(new Point(e.getX()-(HerdAnimalPlacer.SIZE.width/2), e.getY()-(HerdAnimalPlacer.SIZE.height/2)));
 			herdAnimals.add(h);
 			add(h);
+			gui.sim.addAnimal(h.animal);
+			
 			validate();
 			setVisible(true);
-			System.out.println("No. Animal: " + this.getComponentCount());
 		
 		}
 		
@@ -84,9 +78,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener, 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		/*oldView = gui.gridFrame.getViewport().getViewPosition();
-		oldX = e.getX();
-		oldY = e.getY();*/
 		
 	}
 
@@ -111,22 +102,12 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener, 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		
-		/*int newX = (int)(oldX-e.getX());
-		int newY = (int)(oldY-e.getY());
-		Point newView = new Point(oldView.x-newX, oldView.y-newY);
-		/*if(newView.x < 0)
-			newView.x = 0;
-		else if(newView.x > 30*width)
-			newView.x = 30*width-
-		gui.gridFrame.getViewport().setViewPosition(newView);
-		repaint();*/
-		
 	}
 
 	//Display current location information
 	public void mouseMoved(MouseEvent e) {
 		
-		gui.tileData.setText("x: " + e.getX() + " y: " + e.getY() + " h: " + tiles[e.getY()/30][e.getX()/30].getHeight());
+		gui.tileData.setText("x: " + e.getX() + " y: " + e.getY() + " h: " + gui.sim.getHeight(e.getX(), e.getY()));
 		
 	}
 

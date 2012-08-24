@@ -10,7 +10,6 @@ public class Tile{
 		xCo = x;
 		yCo = y;
 		height = h;
-		//addMouseListener(this);
 		
 	}
 	

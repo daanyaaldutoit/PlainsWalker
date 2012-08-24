@@ -20,6 +20,8 @@ public class ToolBar implements ActionListener{
 	protected JButton waypointButton;
 	protected JButton herdAnimalButton;
 	protected JButton predatorButton;
+	protected JButton start;
+	protected JButton stop;
 	
 	//Set up toolbar
 	public ToolBar(JPanel container, Interface inter){
@@ -44,6 +46,20 @@ public class ToolBar implements ActionListener{
 		predatorButton.setActionCommand("Predator");
 		predatorButton.addActionListener(this);
 		tools.add(predatorButton);
+		
+		start = new JButton("Start");
+		start.setToolTipText("Start Simulation");
+		start.setActionCommand("Play/Pause");
+		start.addActionListener(this);
+		start.setEnabled(false);
+		tools.add(start);
+		
+		stop = new JButton("Stop");
+		stop.setToolTipText("Stop Simulation");
+		stop.setActionCommand("Stop");
+		stop.addActionListener(this);
+		stop.setEnabled(false);
+		tools.add(stop);
 		
 		tools.setFloatable(false);
 		
@@ -77,6 +93,13 @@ public class ToolBar implements ActionListener{
 				gui.curMode = placerMode.PREDATOR;
 				
 			}
+		//Start simulation
+		else if(e.getActionCommand().equals("Play/Pause")){
+			
+			gui.sim.start();
+			stop.setEnabled(true);
+			
+		}
 		
 	}
 	

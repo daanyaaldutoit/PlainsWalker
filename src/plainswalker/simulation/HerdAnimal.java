@@ -26,6 +26,7 @@ public class HerdAnimal extends Animal{
 		velocity = velocity.plus( accelaration.multiply(dt) );
 		position = position.plus( velocity.multiply(dt));
 		placer.setLocation(Math.round(position.x),Math.round(position.y));
+		placer.repaint();
 		
 	}
 	
@@ -55,14 +56,14 @@ public class HerdAnimal extends Animal{
 				
 			}
 			
-		if(numInClus > 0){
+		/*if(numInClus > 0){
 		
 			clusCenter = clusCenter.multiply(1/numInClus);
 			clusVelocity = clusVelocity.multiply(1/numInClus);
 			ac = ac.plus(clusVelocity.minus(velocity));
 			ac = ac.plus(clusCenter.minus(position));
 			
-		}
+		}*/
 		
 		return ac;
 		

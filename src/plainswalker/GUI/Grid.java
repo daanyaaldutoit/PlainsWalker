@@ -11,6 +11,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -25,6 +26,8 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener, 
 	protected int length, width;
 	private ArrayList<HerdAnimalPlacer> herdAnimals;
 	
+	private BufferedImage buffer;
+	
 	//Set up grid parameters
 	public Grid(Interface inter, int l, int w){
 		
@@ -38,6 +41,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener, 
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		setPreferredSize(new Dimension(30*w,30*l));
+		
 		setVisible(true);
 		
 	}
@@ -46,14 +50,28 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener, 
 	protected void paintComponent(Graphics g){
 		
 		super.paintComponent(g);
+		//Graphics2D g2D = (Graphics2D)g;
 		
-		((Graphics2D) g).setPaint(Color.BLACK);
-		for(int i = 0; i < length; ++i)
-			for(int j = 0; j < width; ++j){
-				g.drawLine(0, i*30, width*30, i*30);
-				g.drawLine(j*30, 0, j*30, length*30);
-				
-			}
+		if(buffer == null){
+			
+			int bufferWidth = getWidth()/4;
+			int bufferHeight = getHeight()/4;
+			buffer = new BufferedImage(bufferWidth, bufferHeight, BufferedImage.TYPE_BYTE_GRAY);//(BufferedImage) createImage(getWidth(), getHeight());
+			Graphics2D imDraw = buffer.createGraphics();
+			imDraw.setBackground(Color.WHITE);
+			imDraw.clearRect(0, 0, bufferWidth, bufferHeight);
+			imDraw.setColor(Color.BLACK);
+			for(int i = 0; i < length/4; ++i)
+				for(int j = 0; j < width/4; ++j){
+					imDraw.drawLine(0, i*30, width*30, i*30);
+					imDraw.drawLine(j*30, 0, j*30, length*30);
+					}
+			
+		}
+		
+		for(int i = 0; i < getHeight(); i+=buffer.getHeight())
+			for(int j = 0; j < getWidth(); j+=buffer.getWidth())
+				g.drawImage(buffer, j, i, null);
 		
 	}
 	
@@ -63,15 +81,24 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener, 
 		//Place Herd Animal
 		if(gui.curMode == Interface.placerMode.HERD_ANIMAL){
 		
-			setVisible(false);
 			HerdAnimalPlacer h = new HerdAnimalPlacer(new Point(e.getX()-(HerdAnimalPlacer.SIZE.width/2), e.getY()-(HerdAnimalPlacer.SIZE.height/2)));
 			herdAnimals.add(h);
 			add(h);
 			gui.sim.addAnimal(h.animal);
-			
 			validate();
-			setVisible(true);
+			repaint();
 		
+		}
+		//Place Waypoint
+		else if(gui.curMode == Interface.placerMode.WAYPOINT){
+			
+			HerdAnimalPlacer h = new HerdAnimalPlacer(new Point(e.getX()-(HerdAnimalPlacer.SIZE.width/2), e.getY()-(HerdAnimalPlacer.SIZE.height/2)));
+			herdAnimals.add(h);
+			add(h);
+			gui.sim.addAnimal(h.animal);
+			validate();
+			repaint();
+			
 		}
 		
 	}

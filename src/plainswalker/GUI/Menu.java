@@ -36,12 +36,11 @@ public class Menu implements ActionListener {
 		//New Simulation
 		else if((e.getActionCommand().equals("New"))){
 		
-			gui.gridFrame.setVisible(false);
 			gui.grid = new Grid(gui, 500, 500);
 			gui.gridFrame.setViewportView(gui.grid);
 			gui.tools.start.setEnabled(true);
 			gui.mainFrame.validate();
-			gui.gridFrame.setVisible(true);
+			gui.mainFrame.repaint();
 		
 		}
 		

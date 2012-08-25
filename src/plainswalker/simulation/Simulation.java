@@ -6,13 +6,40 @@ import java.util.ArrayList;
 
 import plainswalker.GUI.Interface;
 
-public class Simulation {
+public class Simulation{
 
 	private Tile[][] tiles;
-	final float TIMESTEP = 1f;
+	final float TIMESTEP = 0.001f;
 	protected ArrayList<Animal> anims = new ArrayList<Animal>();
+	//protected ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
 	private Simulation prevState;
 	private Interface gui;
+	
+	private class Updator implements Runnable{
+
+		private Simulation sim;
+		int numStepsTaken = 0;
+		
+		public Updator(Simulation s){
+			
+			sim = s;
+			
+		}
+		
+		public void run() {
+			
+			while(numStepsTaken < 1000){
+				
+				for(Animal a : anims){
+					a.update(TIMESTEP, sim);
+				}
+				gui.getMain().repaint();
+				
+			}
+			
+		}
+		
+	}
 	
 	public Simulation(Interface inter, int l, int w){
 		
@@ -33,21 +60,8 @@ public class Simulation {
 	public void start(){
 		
 		prevState = this;
-		for(int i = 0; i < 100; ++i)
-			timeStep();
-		
-	}
-	
-	public void timeStep(){
-		
-		//gui.getMain().setVisible(false);
-		
-		for(Animal a : anims){
-			a.update(TIMESTEP, this);
-		}
-		
-		gui.getMain().validate();
-		//gui.getMain().setVisible(true);
+		Thread update = new Thread(new Updator(this));
+		update.start();
 		
 	}
 	

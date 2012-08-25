@@ -34,9 +34,9 @@ public class HerdAnimalPlacer extends JComponent{
 		super.paintComponent(g);
 		
 		((Graphics2D) g).setPaint(Color.RED);
-		g.fillRect(SIZE.width/2-5, SIZE.height/2-5, 10, 10);
 		g.drawArc((SIZE.width-HerdAnimal.avoidRad)/2, (SIZE.height-HerdAnimal.avoidRad)/2, HerdAnimal.avoidRad-1, HerdAnimal.avoidRad-1, 0, 360);
 		((Graphics2D) g).setPaint(Color.GREEN);
+		g.fillRect(SIZE.width/2-5, SIZE.height/2-5, 10, 10);
 		g.drawArc(0, 0, SIZE.width-1, SIZE.height-1, 0, 360);
 
 	}

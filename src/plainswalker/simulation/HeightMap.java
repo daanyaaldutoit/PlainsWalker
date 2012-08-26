@@ -1,7 +1,7 @@
 // HEIGHTMAP CLASS:
 // loads a new heightmap from a file/restores a saved heightmap/saves heightmap
-// 
-//package plainswalker.simulation;
+
+package plainswalker.simulation;
 
 import java.io.*;
 import java.awt.Point;

@@ -4,9 +4,12 @@
 package plainswalker.simulation;
 
 import java.io.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 
-public class HeightMap {
+public class HeightMap{
 	// height grid: 2D array
 	double[][] heightgrid;
 	int length = 100, width = 100;
@@ -32,13 +35,13 @@ public class HeightMap {
 	}
 	
 	// constructor which takes in string filename: to be used more often
-	public HeightMap(String filename){
+	public HeightMap(String filename) throws FileNotFoundException, IOException{
 		readFile(filename);
 	}
 	
 	
 	// read in from file
-	public void readFile(String infile){
+	public void readFile(String infile) throws IOException, FileNotFoundException{
 		try {
 			// read in the file (which is one line) and split on " "
 			BufferedReader input = new BufferedReader(new FileReader(infile));
@@ -60,14 +63,31 @@ public class HeightMap {
 		}
 		catch (FileNotFoundException e){
 			System.out.println("(zomg) OH NOES: " + e.getMessage());
-			System.exit(1);
+			throw(e);
 		}
 		catch (IOException e){
 			System.out.println("(zomg) OH NOES: " + e.getMessage());
-			System.exit(1);
+			throw(e);
 		}
+	}
 		
-
+	// draw to buffered image
+	private BufferedImage drawBufferedImage(int w, int h){
+		BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
+		// get a graphics2D object to draw onto the image
+		Graphics2D imageCreator = bi.createGraphics();
+		imageCreator.setBackground(Color.WHITE);
+		imageCreator.clearRect(0, 0, w, h);
+		imageCreator.setColor(Color.BLACK);
+		
+		// SOMEHOW?? fill the buffered image with the relevant colour based on interpolated height of the point
+		
+		return bi;
+	}
+	
+	// get buffered image
+	public BufferedImage getBufferedImage(int w, int h){
+		return drawBufferedImage(w,h);
 	}
 	
 	// get the height at a point with bilinear interpolation

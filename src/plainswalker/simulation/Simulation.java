@@ -10,11 +10,12 @@ public class Simulation{
 
 	private Tile[][] tiles;
 	final float TIMESTEP = 0.001f;
-	protected ArrayList<Animal> anims = new ArrayList<Animal>();
+	protected ArrayList<Herd> herds = new ArrayList<Herd>();	//tenth herd is list of unassigned animals
 	//protected ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
 	private Simulation prevState;
 	private Interface gui;
 	
+	//allows realtime changes to environment
 	private class Updator implements Runnable{
 
 		private Simulation sim;
@@ -28,12 +29,13 @@ public class Simulation{
 		
 		public void run() {
 			
-			while(numStepsTaken < 1000){
+			while(numStepsTaken < 10000000){
 				
-				for(Animal a : anims){
+				for(Animal a : herds.get(0).anims){
 					a.update(TIMESTEP, sim);
-				}
-				gui.getMain().repaint();
+				}	
+			
+				++numStepsTaken;
 				
 			}
 			
@@ -49,14 +51,19 @@ public class Simulation{
 			for(int j = 0; j < w; ++j)
 				tiles[i][j] = new Tile(j, i, 0f);
 		
+		for(int i = 0; i < 10; ++i)
+			herds.add(new Herd());
+		
 	}
 	
+	//return height value at tile
 	public float getHeight(int x, int y){
 		
 		return tiles[y/30][x/30].getHeight();
 		
 	}
 	
+	//Save state and begin processing
 	public void start(){
 		
 		prevState = this;
@@ -65,9 +72,10 @@ public class Simulation{
 		
 	}
 	
-	public void addAnimal(Animal a){
+	//Add animal to a herd
+	public void addAnimal(HerdAnimal a, int index){
 		
-		anims.add(a);
+		herds.get(index).anims.add(a);
 		
 	}
 	

@@ -84,7 +84,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener, 
 			HerdAnimalPlacer h = new HerdAnimalPlacer(new Point(e.getX()-(HerdAnimalPlacer.SIZE.width/2), e.getY()-(HerdAnimalPlacer.SIZE.height/2)));
 			herdAnimals.add(h);
 			add(h);
-			gui.sim.addAnimal(h.animal);
+			gui.sim.addAnimal(h.animal, 0);
 			validate();
 			repaint();
 		
@@ -92,10 +92,10 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener, 
 		//Place Waypoint
 		else if(gui.curMode == Interface.placerMode.WAYPOINT){
 			
-			HerdAnimalPlacer h = new HerdAnimalPlacer(new Point(e.getX()-(HerdAnimalPlacer.SIZE.width/2), e.getY()-(HerdAnimalPlacer.SIZE.height/2)));
-			herdAnimals.add(h);
-			add(h);
-			gui.sim.addAnimal(h.animal);
+			WaypointPlacer w = new WaypointPlacer(new Point(e.getX()-(WaypointPlacer.SIZE.width/2), e.getY()-(WaypointPlacer.SIZE.height/2)));
+			//herdAnimals.add(h);
+			add(w);
+			//gui.sim.addAnimal(h.animal);
 			validate();
 			repaint();
 			

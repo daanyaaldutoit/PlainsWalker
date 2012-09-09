@@ -9,12 +9,12 @@ import java.awt.Point;
 
 import javax.swing.JComponent;
 
-public class WaypointPlacer extends JComponent {
+public class WaypointMarker extends JComponent {
 
 	static Dimension SIZE = new Dimension(10,10);
 	private static final long serialVersionUID = 1L;
 	
-	public WaypointPlacer(Point p){
+	public WaypointMarker(Point p){
 		
 		setLocation(p);
 		setSize(SIZE);

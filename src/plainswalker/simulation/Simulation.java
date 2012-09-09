@@ -2,24 +2,21 @@
 
 package plainswalker.simulation;
 
-import java.util.ArrayList;
+import java.util.Observable;
 
-import plainswalker.GUI.Interface;
-
-public class Simulation{
+public class Simulation extends Observable{
 
 	private Tile[][] tiles;
 	final float TIMESTEP = 0.001f;
-	protected ArrayList<Herd> herds = new ArrayList<Herd>();	//tenth herd is list of unassigned animals
+	protected Herd[] herds = new Herd[10];	//tenth herd is list of unassigned animals
 	//protected ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
-	private Simulation prevState;
-	private Interface gui;
+	private Thread updator;
 	
 	//allows realtime changes to environment
 	private class Updator implements Runnable{
 
 		private Simulation sim;
-		int numStepsTaken = 0;
+		//int numStepsTaken = 0;
 		
 		public Updator(Simulation s){
 			
@@ -29,30 +26,26 @@ public class Simulation{
 		
 		public void run() {
 			
-			while(numStepsTaken < 10000000){
-				
-				for(Animal a : herds.get(0).anims){
+				while(true){
+				for(Animal a : herds[0].anims){
 					a.update(TIMESTEP, sim);
-				}	
-			
-				++numStepsTaken;
-				
-			}
-			
+				}
+				setChanged();
+				notifyObservers(herds);
+				}
 		}
 		
 	}
 	
-	public Simulation(Interface inter, int l, int w){
+	public Simulation(int l, int w){
 		
-		gui = inter;
 		tiles = new Tile[l][w];
 		for(int i = 0; i < l; ++i)
 			for(int j = 0; j < w; ++j)
 				tiles[i][j] = new Tile(j, i, 0f);
 		
 		for(int i = 0; i < 10; ++i)
-			herds.add(new Herd());
+			herds[i] = new Herd();
 		
 	}
 	
@@ -65,17 +58,33 @@ public class Simulation{
 	
 	//Save state and begin processing
 	public void start(){
-		
-		prevState = this;
-		Thread update = new Thread(new Updator(this));
-		update.start();
+			
+		updator = new Thread(new Updator(this));
+		updator.start();
 		
 	}
 	
 	//Add animal to a herd
 	public void addAnimal(HerdAnimal a, int index){
 		
-		herds.get(index).anims.add(a);
+		herds[index].anims.add(a);
+		setChanged();
+		notifyObservers(a);
+		
+	}
+	
+	public void pause() {
+		
+		updator.interrupt();
+		
+	}
+
+	public void stop() {
+		
+		updator.interrupt();
+		//tiles = prevState.tiles;
+		//Thread update = new Thread(new Updator(this));
+		//update.start();
 		
 	}
 	

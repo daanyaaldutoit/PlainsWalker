@@ -1,9 +1,8 @@
-//Contains all interface GUI functionality
+//Contains all menu components
 
 package plainswalker.GUI;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBoxMenuItem;
@@ -12,10 +11,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-public class Menu implements ActionListener {
+public class Menu{
 
 	//File Menu items
-	private Interface gui;
 	protected JMenuBar menu;
 	protected JMenu fileMenu;
 	protected JMenuItem newSim;
@@ -27,29 +25,9 @@ public class Menu implements ActionListener {
 	protected JMenu viewMenu;
 	protected JCheckBoxMenuItem showTerrain;
 	
-	public void actionPerformed(ActionEvent e) {
-		
-		//Quit
-		if(e.getActionCommand().equals("Quit"))
-			System.exit(0);
-		
-		//New Simulation
-		else if((e.getActionCommand().equals("New"))){
-		
-			gui.grid = new Grid(gui, 500, 500);
-			gui.gridFrame.setViewportView(gui.grid);
-			gui.tools.start.setEnabled(true);
-			gui.mainFrame.validate();
-			gui.mainFrame.repaint();
-		
-		}
-		
-	}
-	
 	//Set up all menu items
 	public Menu(JPanel container, Interface inter){
 		
-		gui = inter;
 		menu = new JMenuBar();
 		
 		//File Menu
@@ -60,25 +38,21 @@ public class Menu implements ActionListener {
 		newSim = new JMenuItem("New Simulation");
 		newSim.setMnemonic('N');
 		newSim.setActionCommand("New");
-		newSim.addActionListener(this);
 		fileMenu.add(newSim);
 		
 		loadSim = new JMenuItem("Load Simulation");
 		loadSim.setMnemonic('L');
 		loadSim.setActionCommand("Load");
-		loadSim.addActionListener(this);
 		fileMenu.add(loadSim);
 		
 		saveSim = new JMenuItem("Save Simulation");
 		saveSim.setMnemonic('S');
 		saveSim.setActionCommand("Save");
-		saveSim.addActionListener(this);
 		fileMenu.add(saveSim);
 		
 		quit = new JMenuItem("Quit");
 		quit.setMnemonic('Q');
 		quit.setActionCommand("Quit");
-		quit.addActionListener(this);
 		
 		fileMenu.add(quit);
 		
@@ -90,10 +64,20 @@ public class Menu implements ActionListener {
 		showTerrain = new JCheckBoxMenuItem("View Tile Heights");
 		showTerrain.setMnemonic('H');
 		showTerrain.setActionCommand("Show Heights");
-		showTerrain.addActionListener(this);
 		viewMenu.add(showTerrain);
 		
 		container.add(menu, BorderLayout.NORTH);
+		
+	}
+	
+	//Add an ActionListener to all components
+	public void setListener(ActionListener lis){
+		
+		newSim.addActionListener(lis);
+		loadSim.addActionListener(lis);
+		saveSim.addActionListener(lis);
+		quit.addActionListener(lis);
+		showTerrain.addActionListener(lis);
 		
 	}
 

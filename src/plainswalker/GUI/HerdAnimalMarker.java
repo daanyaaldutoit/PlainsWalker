@@ -13,16 +13,15 @@ import javax.swing.JComponent;
 import plainswalker.simulation.HerdAnimal;
 import plainswalker.simulation.Vector3D;
 
-public class HerdAnimalPlacer extends JComponent{
+public class HerdAnimalMarker extends JComponent{
 
-	static Dimension SIZE = new Dimension(HerdAnimal.neighbourRad, HerdAnimal.neighbourRad);
+	public static Dimension SIZE = new Dimension(HerdAnimal.neighbourRad, HerdAnimal.neighbourRad);
 	private static final long serialVersionUID = 1L;
-	protected HerdAnimal animal;
 	
 	//Set up animal
-	public HerdAnimalPlacer(Point p){
+	public HerdAnimalMarker(Vector3D pos){
 		
-		animal = new HerdAnimal(new Vector3D(p.x, p.y, 0), this);
+		Point p = new Point(Math.round(pos.getX()), Math.round(pos.getY()));
 		setLocation(p);
 		setSize(SIZE);
 		
@@ -39,6 +38,13 @@ public class HerdAnimalPlacer extends JComponent{
 		g.fillRect(SIZE.width/2-5, SIZE.height/2-5, 10, 10);
 		g.drawArc(0, 0, SIZE.width-1, SIZE.height-1, 0, 360);
 
+	}
+	
+	//Set center of graphic to animal position
+	public void setLocation(Point p){
+		
+		super.setLocation(p.x - (SIZE.width/2), p.y - (SIZE.height/2));
+		
 	}
 
 }

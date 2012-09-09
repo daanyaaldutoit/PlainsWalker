@@ -4,6 +4,7 @@ package plainswalker.simulation;
 
 public class Vector3D {
 	
+	//Coordinate components
 	protected float x;
 	protected float y;
 	protected float z;
@@ -11,8 +12,7 @@ public class Vector3D {
 	//Constructors
 	public Vector3D(){
 		
-		super();
-		z = 0;
+		x = 0; y = 0; z = 0;
 		
 	}
 	
@@ -24,18 +24,6 @@ public class Vector3D {
 		
 	}
 	
-	public double distanceSq(Vector3D vec){
-		
-		return Math.pow(x-vec.x, 2)+Math.pow(y-vec.y, 2)+Math.pow(z-vec.z, 2);
-		
-	}
-	
-	public double distance(Vector3D vec){
-		
-		return Math.sqrt(distanceSq(vec));
-		
-	}
-	
 	//Get magnitude
 	public float mag(){
 		
@@ -43,6 +31,8 @@ public class Vector3D {
 		
 	}
 	
+	//Arithmetic operations
+	//-------------------------------------------------------------------------------
 	public Vector3D plus(Vector3D v){
 		
 		return new Vector3D( x+v.x, y+v.y, z+v.z);
@@ -60,5 +50,24 @@ public class Vector3D {
 		return new Vector3D( scalar*x, scalar*y, scalar*z);
 		
 	}
+	
+	public double distanceSq(Vector3D vec){
+		
+		return Math.pow(x-vec.x, 2)+Math.pow(y-vec.y, 2)+Math.pow(z-vec.z, 2);
+		
+	}
+	
+	public double distance(Vector3D vec){
+		
+		return Math.sqrt(distanceSq(vec));
+		
+	}
+	
+	//--------------------------------------------------------
+	
+	//Coordinate getters
+	public float getX(){return x;}
+	
+	public float getY(){return y;}
 
 }

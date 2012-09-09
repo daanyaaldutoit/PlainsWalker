@@ -1,3 +1,7 @@
+//A descetised portion of the simulation world
+//Daanyaal du Toit
+//09 September 2012
+
 package plainswalker.simulation;
 
 public class Tile{

@@ -2,24 +2,20 @@
 
 package plainswalker.simulation;
 
-import plainswalker.GUI.HerdAnimalPlacer;
-
 public class HerdAnimal extends Animal{
 	
 	public static int avoidRad = 100;
 	public static int neighbourRad = 250;
 	protected int herdIndex;
 	private float accumulator = 0.01f;
-	private HerdAnimalPlacer placer;
+	private float maxVelocity = 1;
 	
-	public HerdAnimal(Vector3D p, HerdAnimalPlacer pl){
+	public HerdAnimal(Vector3D p){
 		
 		position = p;
 		velocity = new Vector3D();
 		accelaration = new Vector3D();
 		herdIndex = 0;
-		
-		placer = pl;
 		
 	}
 
@@ -32,9 +28,11 @@ public class HerdAnimal extends Animal{
 			accelaration = accelaration.multiply(accumulator/accelaration.mag());
 		
 		velocity = velocity.plus( accelaration.multiply(dt) );
+		
+		if(velocity.mag() > maxVelocity)
+			velocity = velocity.multiply(maxVelocity/velocity.mag());
+		
 		position = position.plus( velocity.multiply(dt));
-		placer.setLocation(Math.round(position.x),Math.round(position.y));
-		placer.repaint();
 		
 	}
 	
@@ -43,7 +41,7 @@ public class HerdAnimal extends Animal{
 		
 		Vector3D toWaypoint = way.minus(position);
 		Vector3D uToWaypoint = toWaypoint.multiply(1/toWaypoint.mag());
-		accelaration = accelaration.plus(uToWaypoint.multiply((float)way.distance(position)/400));
+		accelaration = accelaration.plus(uToWaypoint.multiply((float)way.distance(position)/50));
 		
 	}
 
@@ -54,7 +52,7 @@ public class HerdAnimal extends Animal{
 		int numInClus = 0;
 		Vector3D clusVelocity = new Vector3D();
 		Vector3D ac = new Vector3D();
-		for(Animal a: s.herds.get(herdIndex).anims)
+		for(Animal a: s.herds[herdIndex].anims)
 			if(!a.equals(this)){
 				
 				if(position.distance(a.position) <= a.getARad()){//avoidance	

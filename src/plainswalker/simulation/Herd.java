@@ -12,4 +12,6 @@ public class Herd {
 		
 	}
 	
+	public ArrayList<HerdAnimal> getAnims(){return anims;}
+	
 }

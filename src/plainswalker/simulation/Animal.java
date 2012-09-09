@@ -4,12 +4,14 @@ package plainswalker.simulation;
 
 public abstract class Animal{
 
-	Vector3D position;
-	Vector3D velocity;
-	Vector3D accelaration;
+	protected Vector3D position;
+	protected Vector3D velocity;
+	protected Vector3D accelaration;
 	
 	//Changes component based on timestep
 	public abstract void update(float dt, Simulation s);
+	
+	public Vector3D getPosition(){ return position;}
 	
 	public abstract int getARad();
 	

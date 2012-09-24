@@ -2,8 +2,12 @@
 
 package plainswalker.simulation;
 
-public abstract class Animal{
+import java.io.Serializable;
 
+public abstract class Animal implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
 	protected Vector3D position;
 	protected Vector3D velocity;
 	protected Vector3D accelaration;

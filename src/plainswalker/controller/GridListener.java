@@ -31,12 +31,14 @@ public class GridListener implements MouseListener, MouseMotionListener {
 		//Place Waypoint
 		else if(con.curMode == Controller.placerMode.WAYPOINT){
 			
-			//WaypointPlacer w = new WaypointPlacer(new Point(e.getX()-(WaypointPlacer.SIZE.width/2), e.getY()-(WaypointPlacer.SIZE.height/2)));
-			//herdAnimals.add(h);
-			//add(w);
-			//gui.sim.addAnimal(h.animal);
-			//validate();
-			//repaint();
+			Vector3D waypoint = new Vector3D(e.getX(), e.getY(), 0);
+			con.model.addWaypoint(waypoint, 0);
+			
+		}
+		else{
+			
+			Predator p = new Predator(new Vector3D(e.getX(), e.getY(), 0) );
+			con.model.addPredator(p, 0);
 			
 		}
 		

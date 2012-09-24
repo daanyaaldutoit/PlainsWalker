@@ -2,24 +2,24 @@
 
 package plainswalker.simulation;
 
-public class Vector3D {
+import java.awt.geom.Point2D;
+
+public class Vector3D extends Point2D.Float{
 	
-	//Coordinate components
-	protected float x;
-	protected float y;
-	protected float z;
+	private static final long serialVersionUID = 1L;
+	public float z;
 	
 	//Constructors
 	public Vector3D(){
 		
-		x = 0; y = 0; z = 0;
+		super();
+		z = 0;
 		
 	}
 	
 	public Vector3D(float x, float y, float z){
 		
-		this.x = x;
-		this.y = y;
+		super(x, y);
 		this.z = z;
 		
 	}
@@ -31,29 +31,39 @@ public class Vector3D {
 		
 	}
 	
+	//Get unit vector
+	public Vector3D normalize(){
+		
+		if(x == 0 && y == 0 && z == 0)
+			return this;
+		else
+			return this.multiply(1/mag());
+		
+	}
+	
 	//Arithmetic operations
 	//-------------------------------------------------------------------------------
 	public Vector3D plus(Vector3D v){
 		
-		return new Vector3D( x+v.x, y+v.y, z+v.z);
+		return new Vector3D(x+v.x, y+v.y, z+v.z);
 		
 	}
 	
 	public Vector3D minus(Vector3D v){
 		
-		return new Vector3D( x-v.x, y-v.y, z-v.z);
+		return new Vector3D(x-v.x, y-v.y, z-v.z);
 		
 	}
 	
 	public Vector3D multiply(float scalar){
 		
-		return new Vector3D( scalar*x, scalar*y, scalar*z);
+		return new Vector3D(scalar*x, scalar*y, scalar*z);
 		
 	}
 	
 	public double distanceSq(Vector3D vec){
 		
-		return Math.pow(x-vec.x, 2)+Math.pow(y-vec.y, 2)+Math.pow(z-vec.z, 2);
+		return super.distanceSq(vec)+Math.pow(z-vec.z, 2);
 		
 	}
 	
@@ -64,10 +74,20 @@ public class Vector3D {
 	}
 	
 	//--------------------------------------------------------
-	
-	//Coordinate getters
-	public float getX(){return x;}
-	
-	public float getY(){return y;}
 
+	public String toString(){
+		
+		return "(" + x + ", " + y + ", " + z + ")";
+		
+	}
+	
+	public boolean equals(Object o){
+		
+		if(o instanceof Vector3D)
+			return(((Vector3D) o).x == x && ((Vector3D) o).y == y && ((Vector3D) o).z == z);
+		else
+			return false;
+		
+	}
+	
 }

@@ -2,13 +2,17 @@
 
 package plainswalker.simulation;
 
+import java.util.ArrayList;
+
 public class HerdAnimal extends Animal{
 	
-	public static int avoidRad = 100;
-	public static int neighbourRad = 250;
+	private static final long serialVersionUID = 1L;
+	
+	public static int avoidRad = 50;
+	public static int neighbourRad = 100;
 	protected int herdIndex;
-	private float accumulator = 0.01f;
-	private float maxVelocity = 1;
+	private float accumulator = 1f;
+	private float maxVel = 1.5f;
 	
 	public HerdAnimal(Vector3D p){
 		
@@ -22,76 +26,194 @@ public class HerdAnimal extends Animal{
 	public void update(float dt, Simulation s) {
 		
 		accelaration = getAccel(s);
-		goTo(new Vector3D(800, 800, 0));
-		
-		if(accelaration.mag() > accumulator)		//if over max accel
-			accelaration = accelaration.multiply(accumulator/accelaration.mag());
-		
-		velocity = velocity.plus( accelaration.multiply(dt) );
-		
-		if(velocity.mag() > maxVelocity)
-			velocity = velocity.multiply(maxVelocity/velocity.mag());
-		
-		position = position.plus( velocity.multiply(dt));
-		
-	}
-	
-	//Adjust accel towards waypoint
-	private void goTo(Vector3D way) {
-		
-		Vector3D toWaypoint = way.minus(position);
-		Vector3D uToWaypoint = toWaypoint.multiply(1/toWaypoint.mag());
-		accelaration = accelaration.plus(uToWaypoint.multiply((float)way.distance(position)/50));
+		velocity = velocity.plus(accelaration.multiply(dt));
+		if(velocity.mag() > maxVel)
+			velocity = velocity.multiply(maxVel/velocity.mag());
+		position = position.plus(velocity.multiply(dt));
 		
 	}
 
 	//Calculates weights of herding behavioural accelarations
 	private Vector3D getAccel(Simulation s){
 		
-		Vector3D clusCenter = new Vector3D();
-		int numInClus = 0;
-		Vector3D clusVelocity = new Vector3D();
 		Vector3D ac = new Vector3D();
-		for(Animal a: s.herds[herdIndex].anims)
-			if(!a.equals(this)){
-				
-				if(position.distance(a.position) <= a.getARad()){//avoidance	
-					
-					Vector3D dir = position.minus(a.position);	
-					Vector3D uDir = dir.multiply(1/dir.mag());
-					ac = ac.plus(uDir.multiply(600/(float)position.distanceSq(a.position)));
-					
-					}
-				if(position.distance(a.position) <= neighbourRad){
-					
-					clusCenter = clusCenter.plus(a.position);
-					clusVelocity = clusVelocity.plus(a.velocity);
-					++numInClus;
-					
-				}
-				
-			}
-			
-		if(numInClus > 0){
 		
-			clusCenter = clusCenter.multiply(1/numInClus);
-			clusVelocity = clusVelocity.multiply(1/numInClus);
-			
-			ac = ac.plus(clusVelocity.minus(velocity));
-			
-			Vector3D toCenter = clusCenter.minus(position);
-			Vector3D uToCenter = toCenter.multiply(1/toCenter.mag());
-			ac = ac.plus(uToCenter.multiply((float)position.distance(clusCenter)/400));
-			
+		//Process neighbours into categories
+		ArrayList<Animal> toAvoid = new ArrayList<Animal>();
+		ArrayList<HerdAnimal> neighbours = new ArrayList<HerdAnimal>();
+		processNeighbours(toAvoid, neighbours, s);
+		
+		//Get acceleration components
+		Vector3D avoid = getAvoidDir(toAvoid);
+		Vector3D centering = getCentDir(neighbours);
+		Vector3D matching = getMatchDir(neighbours);
+		Vector3D route = new Vector3D();
+		
+		if(s.herds[herdIndex].route.size() > 0)
+			route = goTo(s.herds[herdIndex].route.getFirst());
+		
+		//Adjust by component strength between 0 and 1
+		avoid = avoid.multiply(0.9f);
+		centering = centering.multiply(0.8f);
+		matching = matching.multiply(0.1f);
+		route = route.multiply(0.6f);
+		
+		//Build acceleration with following priority order: route, avoid, matching, centering
+		float magAccumulator = 0;
+		
+		ac = avoid;
+		magAccumulator += avoid.mag();
+		
+		if(magAccumulator+route.mag() < accumulator){
+			ac = ac.plus(route);
+			magAccumulator += route.mag();
+		}
+		else{
+			ac = ac.plus(route.multiply(1-(ac.mag()/accumulator)));
+			magAccumulator = accumulator;
+		}
+		
+		
+		if(magAccumulator+matching.mag() < accumulator){
+			ac = ac.plus(matching);
+			magAccumulator += matching.mag();
+		}
+		else{
+			ac = ac.plus(matching.multiply(1-(ac.mag()/accumulator)));
+			magAccumulator = accumulator;
+		}
+		
+		
+		if(magAccumulator + centering.mag() < accumulator){
+			ac = ac.plus(centering);
+			magAccumulator += centering.mag();
+		}
+		else{
+			ac = ac.plus(centering.multiply(1-(ac.mag()/accumulator)));
+			magAccumulator = accumulator;
 		}
 		
 		return ac;
 		
 	}
 
-	@Override
+	//Populate avoid and neighbour lists
+	protected void processNeighbours(ArrayList<Animal> avoid,
+			ArrayList<HerdAnimal> neighbours, Simulation s) {
+		
+		for(Animal a: s.herds[herdIndex].anims)
+			if(!a.equals(this)){
+				
+				if(shouldAvoid(a)){//avoidance	
+					
+					avoid.add(a);
+					
+					}
+				if(position.distance(a.position) <= neighbourRad){//neighbours
+					
+					neighbours.add((HerdAnimal) a);
+					
+				}
+				
+			}
+		
+		for(Animal a: s.packs[0].preds){
+			
+			if(shouldAvoid(a))
+				avoid.add(a);
+			
+		}
+		
+	}
+
 	public int getARad() {
 		return avoidRad;
 	}
+	
+	protected boolean shouldAvoid(Animal a){
+		
+		return position.distance(a.position) <= a.getARad();
+		
+	}
+	
+	//Get each accelaration component as a unit vector
+	//-----------------------------------------------------------------------------------
+	
+	//Direction that avoids all animals that are too close
+	protected Vector3D getAvoidDir(ArrayList<Animal> avoid){
+		
+		Vector3D aDir = new Vector3D();
+		
+		for(Animal a: avoid){
+			
+			Vector3D dir = position.minus(a.position);
+			aDir = aDir.plus(dir.multiply(1/(dir.mag()*dir.mag())));
+			
+		}
+		
+		return aDir.normalize();
+		
+	}
+	
+	//Direction to the center of the animals in this cluster
+	protected Vector3D getCentDir(ArrayList<HerdAnimal> neigh){
+		
+		Vector3D cDir = new Vector3D();
+		
+		for(HerdAnimal h: neigh){
+			
+			Vector3D toCenter = h.position.minus(position);
+			cDir = cDir.plus(toCenter);
+			
+		}
+		
+		return cDir.multiply(neigh.size()).normalize();
+		
+	}
+	
+	//Direction tomatch the velocity of the animals in this cluster
+	protected Vector3D getMatchDir(ArrayList<HerdAnimal> neigh){
+		
+		Vector3D mDir = new Vector3D();
+		
+		for(HerdAnimal h: neigh){
+			
+			Vector3D toMatch = h.velocity.minus(velocity);
+			mDir = mDir.plus(toMatch);
+			
+		}
+		
+		return mDir.multiply(neigh.size()).normalize();
+		
+	}
+	
+	//Direction to next waypoint
+	protected Vector3D goTo(Vector3D way) {
+			
+		Vector3D toWaypoint = way.minus(position);
+		return toWaypoint.normalize();
+			
+	}
+	
+	//----------------------------------------------------------------------------
 
+	//Serialization methods
+	//----------------------------------------------------------------------------
+	
+	/*private void writeObject(ObjectOutputStream stream)
+	        throws IOException{
+		
+		stream.writeObject(position);
+		
+	}
+	
+	private void readObject(ObjectInputStream stream)
+	        throws IOException, ClassNotFoundException{
+		
+		position = (Vector3D)stream.readObject();
+		
+	}*/
+	
+	//----------------------------------------------------------------------------
+	
 }

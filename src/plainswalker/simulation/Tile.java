@@ -1,10 +1,14 @@
-//A descetised portion of the simulation world
+//A discretised portion of the simulation world
 //Daanyaal du Toit
 //09 September 2012
 
 package plainswalker.simulation;
 
-public class Tile{
+import java.io.Serializable;
+
+public class Tile implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int xCo, yCo;
 	protected float height;

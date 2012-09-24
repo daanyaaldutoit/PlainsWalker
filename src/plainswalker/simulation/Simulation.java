@@ -2,21 +2,25 @@
 
 package plainswalker.simulation;
 
+import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.Observable;
 
-public class Simulation extends Observable{
+public class Simulation extends Observable implements Serializable{
 
-	private Tile[][] tiles;
-	final float TIMESTEP = 0.001f;
+	private static final long serialVersionUID = 1L;
+	
+	protected Tile[][] tiles;
+	final static float TIMESTEP = 0.001f;
 	protected Herd[] herds = new Herd[10];	//tenth herd is list of unassigned animals
-	//protected ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
-	private Thread updator;
+	protected LinkedList<Vector3D>[] routes = new LinkedList[10];
+	protected Pack[] packs = new Pack[10];
+	private transient Thread updator;
 	
 	//allows realtime changes to environment
 	private class Updator implements Runnable{
 
 		private Simulation sim;
-		//int numStepsTaken = 0;
 		
 		public Updator(Simulation s){
 			
@@ -26,9 +30,12 @@ public class Simulation extends Observable{
 		
 		public void run() {
 			
+				//test
+				herds[0].route = routes[0];
+				
 				while(true){
-				for(Animal a : herds[0].anims){
-					a.update(TIMESTEP, sim);
+				for(Herd h : herds){
+					h.goToWaypoint(sim);
 				}
 				setChanged();
 				notifyObservers(herds);
@@ -44,8 +51,11 @@ public class Simulation extends Observable{
 			for(int j = 0; j < w; ++j)
 				tiles[i][j] = new Tile(j, i, 0f);
 		
-		for(int i = 0; i < 10; ++i)
+		for(int i = 0; i < 10; ++i){
 			herds[i] = new Herd();
+			routes[i] = new LinkedList<Vector3D>();
+			packs[i] = new Pack();
+		}
 		
 	}
 	
@@ -73,6 +83,24 @@ public class Simulation extends Observable{
 		
 	}
 	
+	//Add waypoint to route
+	public void addWaypoint(Vector3D way, int index){
+		
+		routes[index].add(way);
+		setChanged();
+		notifyObservers(way);
+		
+	}
+	
+	//Add predator to world
+	public void addPredator(Predator p, int index){
+		
+		packs[index].preds.add(p);
+		setChanged();
+		notifyObservers(p);
+		
+	}
+	
 	public void pause() {
 		
 		updator.interrupt();
@@ -82,10 +110,40 @@ public class Simulation extends Observable{
 	public void stop() {
 		
 		updator.interrupt();
-		//tiles = prevState.tiles;
-		//Thread update = new Thread(new Updator(this));
-		//update.start();
 		
 	}
+
+	//Getters for simulation elements
+	//----------------------------------------------------------------------
+	
+	public Herd[] getHerds() {
+		return herds;
+	}
+
+	public LinkedList<Vector3D>[] getRoutes() {
+		return routes;
+	}
+
+	public Pack[] getPacks() {
+		return packs;
+	}
+	
+	//------------------------------------------------------------------------
+	
+	/*private void writeObject(ObjectOutputStream stream)
+	        throws IOException{
+		
+		for(int i = 0; i < 10; ++i)
+			stream.writeObject(herds[i]);
+		
+	}
+	
+	private void readObject(ObjectInputStream stream)
+	        throws IOException, ClassNotFoundException{
+		
+		for(int i = 0; i < 10; ++i)
+			herds[i] = (Herd)stream.readObject();
+		
+	}*/
 	
 }

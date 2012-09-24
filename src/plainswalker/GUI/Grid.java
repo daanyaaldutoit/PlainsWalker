@@ -9,20 +9,24 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
+import javax.swing.JViewport;
 
 import plainswalker.controller.GridListener;
+import plainswalker.simulation.Simulation;
 
 public class Grid extends JPanel implements Scrollable{
 	
 	private static final long serialVersionUID = 1L;
-	private static final int blockSize = 30;
+	protected static final int blockSize = 30;
 	
 	protected int length, width;
 	private BufferedImage buffer;
 	protected ArrayList<HerdAnimalMarker>[] herdMarks = new ArrayList[10];
+	protected LinkedList<WaypointMarker>[] wayMarks = new LinkedList[10];
 	
 	//Set up grid parameters
 	public Grid(int l, int w){
@@ -33,8 +37,10 @@ public class Grid extends JPanel implements Scrollable{
 		
 		setPreferredSize(new Dimension(blockSize*w,blockSize*l));
 		
-		for(int i = 0; i < 10; ++i)
+		for(int i = 0; i < 10; ++i){
 			herdMarks[i] = new ArrayList<HerdAnimalMarker>();
+			wayMarks[i] = new LinkedList<WaypointMarker>();
+		}
 		
 		setVisible(true);
 		
@@ -44,9 +50,18 @@ public class Grid extends JPanel implements Scrollable{
 	protected void paintComponent(Graphics g){
 		
 		super.paintComponent(g);
-		//Graphics2D g2D = (Graphics2D)g;
+		Graphics2D g2D = (Graphics2D)g;
+		/*Rectangle vb = ((JViewport) getParent()).getViewRect();
+		for(int i = vb.y; i < vb.y+vb.height; i+= blockSize)
+			for(int j = vb.x; j < vb.x+vb.width; j+= blockSize){
+				
+				this.getParent().getGraphics().drawLine(vb.x, i-(i%blockSize), vb.x+vb.width, i-(i%blockSize));			//horizontal lines
+				this.getParent().getGraphics().drawLine(j-(j%blockSize), vb.y, j-(j%blockSize), vb.y+vb.height);		//vertical lines
+				
+			}*/
 		
-		if(buffer == null){
+		//Draw grid to buffer if necessary
+		/*if(buffer == null){
 			
 			int bufferWidth = getWidth()/4;
 			int bufferHeight = getHeight()/4;
@@ -63,13 +78,27 @@ public class Grid extends JPanel implements Scrollable{
 			
 		}
 		
+		//Draw grid in pieces
 		for(int i = 0; i < getHeight(); i+=buffer.getHeight())
 			for(int j = 0; j < getWidth(); j+=buffer.getWidth())
-				g.drawImage(buffer, j, i, null);
+				g.drawImage(buffer, j, i, null);*/
+		
+		
+		//Draw links between waypoints
+		g2D.setColor(Color.BLUE);
+		for(int i = 0; i < 10; ++i){
+							
+			for(int j = 0; j < wayMarks[0].size()-1; ++j){
+				g2D.drawLine(wayMarks[0].get(j).getX(), wayMarks[0].get(j).getY(), wayMarks[0].get(j+1).getX(), wayMarks[0].get(j+1).getY());
+						
+			}		
+							
+		}
 		
 	}
 
 	//Allows scrolling of the grid
+	//-------------------------------------------------------------------------------------
 	
 	public Dimension getPreferredScrollableViewportSize() {
 		return new Dimension(width, length);
@@ -93,6 +122,9 @@ public class Grid extends JPanel implements Scrollable{
 		return false;
 	}
 	
+	//-------------------------------------------------------------------------------
+	
+	//Attach mouse controller to grid
 	public void setListener(GridListener lis){
 		
 		addMouseListener(lis);

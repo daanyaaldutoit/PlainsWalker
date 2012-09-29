@@ -12,6 +12,7 @@ public class Tile implements Serializable{
 	
 	private int xCo, yCo;
 	protected float height;
+	protected boolean passable;
 	
 	public Tile(int x, int y, float h){
 		

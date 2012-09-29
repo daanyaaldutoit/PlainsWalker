@@ -10,6 +10,7 @@ import java.util.Observer;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import plainswalker.controller.Controller;
 import plainswalker.simulation.*;
@@ -24,18 +25,24 @@ public class Interface implements Observer{
 	protected Grid grid;
 	protected Menu menu;
 	protected ToolBar tools;
-	private JTabbedPane tabs;
-	private HerdTree hTree;
+	protected JTabbedPane tabs;
+	
 	protected JLabel tileData;
+	
+	private HerdTree hTree;
+	private WaypointTree wTree;
+	private PackTree pTree;
 	
 	//Constructor to initialise components
 	public Interface(){
 		
+		//Main window
 		mainFrame = new JFrame("PlainsWalker");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		mainFrame.setSize(Toolkit.getDefaultToolkit().getScreenSize());
 		
+		//Contains toolbar
 		upperFrame = new JPanel(new BorderLayout());
 		mainFrame.add(upperFrame, BorderLayout.NORTH);
 		upperFrame.setVisible(true);
@@ -45,13 +52,23 @@ public class Interface implements Observer{
 		
 		tabs = new JTabbedPane();
 		
+		//Tree setup
 		JPanel herdPanel = new JPanel();
 		hTree = new HerdTree();
 		herdPanel.add(hTree.herdTree);
+
+		JPanel wayPanel = new JPanel();
+		wTree = new WaypointTree();
+		wayPanel.add(wTree.wayTree);
 		
+		JPanel packPanel = new JPanel();
+		pTree = new PackTree();
+		packPanel.add(pTree.packTree);
+		
+		//Tabbed pane for trees
 		tabs.addTab("Herds", herdPanel);
-		tabs.addTab("Predators", new JPanel());
-		tabs.addTab("Waypoints", new JPanel());
+		tabs.addTab("Predators", packPanel);
+		tabs.addTab("Waypoints", wayPanel);
 		mainFrame.add(tabs, BorderLayout.WEST);
 		
 		menu = new Menu(upperFrame, this);
@@ -75,52 +92,76 @@ public class Interface implements Observer{
 		//New Animal added
 		if(change instanceof HerdAnimal){
 			
-			hTree.herds[0].add(new DefaultMutableTreeNode("Animal " + hTree.herds[0].getChildCount()));
+			HerdAnimal hChange = (HerdAnimal) change;
 			
-			HerdAnimalMarker mark = new HerdAnimalMarker(((HerdAnimal) change).getPosition());
+			//Add new node to appropriate herd in tree
+			DefaultTreeModel model = (DefaultTreeModel) hTree.herdTree.getModel();
+			model.insertNodeInto(new DefaultMutableTreeNode("Animal " + hTree.herds[hChange.getIndex()].getChildCount()), hTree.herds[hChange.getIndex()], hTree.herds[hChange.getIndex()].getChildCount());
+			
+			HerdAnimalMarker mark = new HerdAnimalMarker(hChange.getPosition(), menu.showAvoid.isSelected(), menu.showNeighbour.isSelected());
 			grid.add(mark);
-			grid.herdMarks[0].add(mark);
-			grid.validate();
-			grid.repaint();
+			grid.herdMarks[hChange.getIndex()].add(mark);
+			gridFrame.validate();
+			gridFrame.repaint();
 		}
 		
 		//New Waypoint
 		else if(change instanceof Vector3D){
 			
-			//hTree.herds[0].add(new DefaultMutableTreeNode("Animal " + hTree.herds[0].getChildCount()));
-			//hTree.herdTree.validate();
-			//hTree.herdTree.repaint();
+			//Add new node to appropriate route in tree
+			DefaultTreeModel model = (DefaultTreeModel) wTree.wayTree.getModel();
+			model.insertNodeInto(new DefaultMutableTreeNode("Waypoint " + wTree.routes[0].getChildCount()), wTree.routes[0], wTree.routes[0].getChildCount());
 			
 			WaypointMarker mark = new WaypointMarker(((Vector3D) change));
 			grid.add(mark);
 			grid.wayMarks[0].add(mark);
-			grid.validate();
-			grid.repaint();
+			gridFrame.validate();
+			gridFrame.repaint();
 		}
+		
 		//New Predator
 		else if(change instanceof Predator){
 			
-			//hTree.herds[0].add(new DefaultMutableTreeNode("Animal " + hTree.herds[0].getChildCount()));
-			//hTree.herdTree.validate();
-			//hTree.herdTree.repaint();
+			//Add new node to appropriate route in tree
+			DefaultTreeModel model = (DefaultTreeModel) pTree.packTree.getModel();
+			model.insertNodeInto(new DefaultMutableTreeNode("Predator " + pTree.packs[0].getChildCount()), pTree.packs[0], pTree.packs[0].getChildCount());
 			
-			PredatorMarker mark = new PredatorMarker(((Predator) change).getPosition());
+			PredatorMarker mark = new PredatorMarker(((Predator) change).getPosition(), menu.showAvoid.isSelected());
 			grid.add(mark);
-			//grid.wayMarks[0].add(mark);
-			grid.validate();
-			grid.repaint();
+			grid.predMarks[0].add(mark);
+			gridFrame.validate();
+			gridFrame.repaint();
 		}
 		
-		//Update positions of herd animals
-		else if(change instanceof Herd[]){
+		//Tile painted
+		else if(change instanceof Tile){
 			
-			for(int i = 0; i < 10; ++i)
-				for(int j = 0; j < ((Herd[])(change))[i].getAnims().size(); ++j){
+			
+			
+		}
+		
+		//Update positions of movable components
+		else if(change instanceof Frame){
+			
+			Frame cFrame = (Frame)change;
+			
+			for(int i = 0; i < 9; ++i){
 				
-					Vector3D pos = ((Herd[])(change))[i].getAnims().get(j).getPosition();
+				for(int j = 0; j < cFrame.getHerds()[i].getAnims().size(); ++j){
+				
+					Vector3D pos = cFrame.getHerds()[i].getAnims().get(j).getPosition();
 					grid.herdMarks[i].get(j).setLocation(pos);
 				
 				}
+				
+				for(int j = 0; j < cFrame.getPacks()[i].getPreds().size(); ++j){
+					
+					Vector3D pos = cFrame.getPacks()[i].getPreds().get(j).getPosition();
+					grid.predMarks[i].get(j).setLocation(pos);
+				
+				}
+				
+			}
 			
 		}
 		
@@ -135,10 +176,13 @@ public class Interface implements Observer{
 	}
 	
 	//Creates a new Grid as part of a new simulation
-	public void addGrid(int l, int w, Controller con){
+	public void addGrid(HeightMap h, Controller con){
 		
-		grid = new Grid(500, 500);
-		gridFrame.setViewportView(grid);
+		hTree.reset();
+		grid = new Grid(h);
+		GridViewport gridView = new GridViewport();
+		gridView.setView(grid);
+		gridFrame.setViewport(gridView);
 		tools.start.setEnabled(true);
 		mainFrame.validate();
 		mainFrame.repaint();
@@ -180,6 +224,14 @@ public class Interface implements Observer{
 		for(Pack pack: old.getPacks())
 			for(Predator p: pack.getPreds())
 				update(old, p);
+		
+	}
+
+	public void toggleGrid() {
+		
+		((GridViewport)(gridFrame.getViewport())).showGrid = !((GridViewport)(gridFrame.getViewport())).showGrid;
+		gridFrame.validate();
+		gridFrame.repaint();
 		
 	}
 	

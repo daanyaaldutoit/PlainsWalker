@@ -24,6 +24,9 @@ public class Menu{
 	//View Menu Items
 	protected JMenu viewMenu;
 	protected JCheckBoxMenuItem showTerrain;
+	protected JCheckBoxMenuItem showAvoid;
+	protected JCheckBoxMenuItem showNeighbour;
+	protected JCheckBoxMenuItem showGrid;
 	
 	//Set up all menu items
 	public Menu(JPanel container, Interface inter){
@@ -58,13 +61,29 @@ public class Menu{
 		
 		//View Menu
 		viewMenu = new JMenu("View");
-		fileMenu.setMnemonic('V');
+		viewMenu.setMnemonic('V');
 		menu.add(viewMenu);
 		
 		showTerrain = new JCheckBoxMenuItem("View Tile Heights");
 		showTerrain.setMnemonic('H');
 		showTerrain.setActionCommand("Show Heights");
 		viewMenu.add(showTerrain);
+		
+		showAvoid = new JCheckBoxMenuItem("View Avoidance Radii");
+		showAvoid.setMnemonic('A');
+		showAvoid.setActionCommand("Show Avoidance");
+		viewMenu.add(showAvoid);
+		
+		showNeighbour = new JCheckBoxMenuItem("View Neighbours Radii");
+		showNeighbour.setMnemonic('N');
+		showNeighbour.setActionCommand("Show Neighbours");
+		viewMenu.add(showNeighbour);
+		
+		showGrid = new JCheckBoxMenuItem("View Grid");
+		showGrid.setMnemonic('G');
+		showGrid.setActionCommand("Show Grid");
+		showGrid.setState(true);
+		viewMenu.add(showGrid);
 		
 		container.add(menu, BorderLayout.NORTH);
 		
@@ -78,6 +97,9 @@ public class Menu{
 		saveSim.addActionListener(lis);
 		quit.addActionListener(lis);
 		showTerrain.addActionListener(lis);
+		showAvoid.addActionListener(lis);
+		showNeighbour.addActionListener(lis);
+		showGrid.addActionListener(lis);
 		
 	}
 

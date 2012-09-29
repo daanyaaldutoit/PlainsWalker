@@ -61,6 +61,12 @@ public class Vector3D extends Point2D.Float{
 		
 	}
 	
+	public float dot(Vector3D v){
+		
+		return x*v.x + y*v.y + z*v.z;
+		
+	}
+	
 	public double distanceSq(Vector3D vec){
 		
 		return super.distanceSq(vec)+Math.pow(z-vec.z, 2);

@@ -6,40 +6,47 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
-import javax.swing.JViewport;
 
 import plainswalker.controller.GridListener;
-import plainswalker.simulation.Simulation;
+import plainswalker.simulation.HeightMap;
 
 public class Grid extends JPanel implements Scrollable{
 	
 	private static final long serialVersionUID = 1L;
-	protected static final int blockSize = 30;
+	public static final int blockSize = 15;
 	
 	protected int length, width;
-	private BufferedImage buffer;
-	protected ArrayList<HerdAnimalMarker>[] herdMarks = new ArrayList[10];
-	protected LinkedList<WaypointMarker>[] wayMarks = new LinkedList[10];
+	
+	protected Rectangle2D selection;
+	protected BufferedImage heightMap;
+	
+	protected ArrayList<HerdAnimalMarker>[] herdMarks = new ArrayList[9];
+	protected LinkedList<WaypointMarker>[] wayMarks = new LinkedList[9];
+	protected ArrayList<PredatorMarker>[] predMarks = new ArrayList[9];
 	
 	//Set up grid parameters
-	public Grid(int l, int w){
+	public Grid(HeightMap h){
 		
-		length = l;
-		width = w;
+		length = h.getLength();
+		width = h.getWidth();
+		heightMap = h.getBufferedImage(width*5, 5*length);
 		this.setLayout(null);
 		
-		setPreferredSize(new Dimension(blockSize*w,blockSize*l));
+		setPreferredSize(new Dimension(blockSize*width,blockSize*length));
 		
-		for(int i = 0; i < 10; ++i){
+		for(int i = 0; i < 9; ++i){
 			herdMarks[i] = new ArrayList<HerdAnimalMarker>();
 			wayMarks[i] = new LinkedList<WaypointMarker>();
+			predMarks[i] = new ArrayList<PredatorMarker>();
 		}
 		
 		setVisible(true);
@@ -51,42 +58,12 @@ public class Grid extends JPanel implements Scrollable{
 		
 		super.paintComponent(g);
 		Graphics2D g2D = (Graphics2D)g;
-		/*Rectangle vb = ((JViewport) getParent()).getViewRect();
-		for(int i = vb.y; i < vb.y+vb.height; i+= blockSize)
-			for(int j = vb.x; j < vb.x+vb.width; j+= blockSize){
-				
-				this.getParent().getGraphics().drawLine(vb.x, i-(i%blockSize), vb.x+vb.width, i-(i%blockSize));			//horizontal lines
-				this.getParent().getGraphics().drawLine(j-(j%blockSize), vb.y, j-(j%blockSize), vb.y+vb.height);		//vertical lines
-				
-			}*/
 		
-		//Draw grid to buffer if necessary
-		/*if(buffer == null){
-			
-			int bufferWidth = getWidth()/4;
-			int bufferHeight = getHeight()/4;
-			buffer = new BufferedImage(bufferWidth, bufferHeight, BufferedImage.TYPE_BYTE_GRAY);//(BufferedImage) createImage(getWidth(), getHeight());
-			Graphics2D imDraw = buffer.createGraphics();
-			imDraw.setBackground(Color.WHITE);
-			imDraw.clearRect(0, 0, bufferWidth, bufferHeight);
-			imDraw.setColor(Color.BLACK);
-			for(int i = 0; i < length/4; ++i)
-				for(int j = 0; j < width/4; ++j){
-					imDraw.drawLine(0, i*blockSize, width*blockSize, i*blockSize);
-					imDraw.drawLine(j*blockSize, 0, j*blockSize, length*blockSize);
-					}
-			
-		}
-		
-		//Draw grid in pieces
-		for(int i = 0; i < getHeight(); i+=buffer.getHeight())
-			for(int j = 0; j < getWidth(); j+=buffer.getWidth())
-				g.drawImage(buffer, j, i, null);*/
-		
+		g2D.drawImage(heightMap, 0, 0, null);
 		
 		//Draw links between waypoints
 		g2D.setColor(Color.BLUE);
-		for(int i = 0; i < 10; ++i){
+		for(int i = 0; i < 9; ++i){
 							
 			for(int j = 0; j < wayMarks[0].size()-1; ++j){
 				g2D.drawLine(wayMarks[0].get(j).getX(), wayMarks[0].get(j).getY(), wayMarks[0].get(j+1).getX(), wayMarks[0].get(j+1).getY());
@@ -94,6 +71,10 @@ public class Grid extends JPanel implements Scrollable{
 			}		
 							
 		}
+		
+		//Draw selection recangle
+		if(selection != null)
+			g2D.draw(selection);
 		
 	}
 
@@ -129,6 +110,66 @@ public class Grid extends JPanel implements Scrollable{
 		
 		addMouseListener(lis);
 		addMouseMotionListener(lis);
+		
+	}
+
+	//Change visiblity of avoidance radii
+	public void toggleShowAvoid() {
+		
+		for(int i = 0; i < 9; ++i){
+			
+			for(HerdAnimalMarker hm : herdMarks[i])
+				hm.showARadius = !hm.showARadius;
+			
+			for(PredatorMarker pm: predMarks[i])
+				pm.showARadius = !pm.showARadius;
+				
+		}
+		
+		validate();
+		repaint();
+		
+	}
+
+	//Change visiblity of neighbours radii
+	public void toggleShowNeighbours() {
+		
+		for(int i = 0; i < 9; ++i){
+			
+			for(HerdAnimalMarker hm : herdMarks[i])
+				hm.showNRadius = !hm.showNRadius;
+				
+		}
+		
+		validate();
+		repaint();
+		
+	}
+	
+	public void setSelectionRectangle(Rectangle2D s){
+		
+		selection = s;
+		getParent().validate();
+		getParent().repaint();
+		
+	}
+	
+	public void selectMarkers(){
+		
+		for(int i = 0; i < 9; ++i){
+			
+			for(HerdAnimalMarker hm : herdMarks[i]){
+			
+				Point newLoc = new Point(hm.getX()+HerdAnimalMarker.SIZE.width/2, hm.getY()+HerdAnimalMarker.SIZE.height/2);
+				
+				if(selection != null && selection.contains(newLoc))
+					hm.selected = true;
+				else
+					hm.selected = false;
+				
+			}
+				
+		}
 		
 	}
 

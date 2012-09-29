@@ -6,15 +6,20 @@ package plainswalker.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javax.swing.JFileChooser;
+import javax.swing.ProgressMonitor;
+import javax.swing.ProgressMonitorInputStream;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import plainswalker.simulation.HeightMap;
 import plainswalker.simulation.Simulation;
 
 public class MenuListener implements ActionListener {
@@ -27,27 +32,55 @@ public class MenuListener implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		
+		//File Menu
+		//------------------------------------------------------------------------------------------
+		
 		//Quit
 		if(e.getActionCommand().equals("Quit"))
 			System.exit(0);
 		
 		//New Simulation
-		else if((e.getActionCommand().equals("New"))){
+		else if(e.getActionCommand().equals("New")){
 			
-			con.model = new Simulation(500, 500);
-			con.model.addObserver(con.view);
+			JFileChooser loadMap = new JFileChooser();
+			loadMap.setCurrentDirectory(new File("../Plainswalker"));
+			loadMap.setFileFilter(new FileNameExtensionFilter("Map files (*.map)", "map"));
+			int val = loadMap.showOpenDialog(con.view.getMain());
 			
-			con.view.addGrid(500, 500, con);
+			if(val == JFileChooser.APPROVE_OPTION){
+				
+				String fileName = loadMap.getCurrentDirectory() + "/" + loadMap.getSelectedFile().getName();
+				if(!fileName.endsWith(".map"))
+					fileName += ".map";
+				
+				try {
+					HeightMap hMap = new HeightMap(fileName);
+					
+					con.model = new Simulation(hMap);
+					con.model.addObserver(con.view);
+					
+					con.view.addGrid(hMap, con);
+					
+					con.view.getToolbar().resetStart();
+					
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+			}
 		
 		}
 		
 		//Save Simulation
-		else if((e.getActionCommand().equals("Save"))){
+		else if(e.getActionCommand().equals("Save")){
 			
 			JFileChooser saveTo = new JFileChooser();
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("Plainswalker Simulations (.pws)", "pws");
-			saveTo.setFileFilter(filter);
+			saveTo.setCurrentDirectory(new File("../Plainswalker"));
+			saveTo.setFileFilter(new FileNameExtensionFilter("Plainswalker Simulations (*.pws)", "pws"));
 			int val = saveTo.showSaveDialog(con.view.getMain());
+			
 			if(val == JFileChooser.APPROVE_OPTION){
 				
 				String fileName = saveTo.getCurrentDirectory() + "/" + saveTo.getSelectedFile().getName();
@@ -57,7 +90,9 @@ public class MenuListener implements ActionListener {
 				try {
 					FileOutputStream fileOut = new FileOutputStream(fileName);
 					ObjectOutputStream simOut = new ObjectOutputStream(fileOut);
+					ProgressMonitor monitor = new ProgressMonitor(con.view.getMain(), "Saving " + fileName, "", 0, 1);
 					simOut.writeObject(con.model);
+					monitor.setProgress(1);
 					simOut.close();
 					fileOut.close();
 				} catch (IOException e1) {
@@ -69,11 +104,12 @@ public class MenuListener implements ActionListener {
 		}
 		
 		//Load Simulation
-		else if((e.getActionCommand().equals("Load"))){
+		else if(e.getActionCommand().equals("Load")){
 			
 			JFileChooser loadFrom = new JFileChooser();
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("Plainswalker Simulations (.pws)", "pws");
-			loadFrom.setFileFilter(filter);
+			loadFrom.setCurrentDirectory(new File("../Plainswalker"));
+			loadFrom.setFileFilter(new FileNameExtensionFilter("Plainswalker Simulations (*.pws)", "pws"));
+			
 			int val = loadFrom.showOpenDialog(con.view.getMain());
 			if(val == JFileChooser.APPROVE_OPTION){
 				
@@ -82,14 +118,15 @@ public class MenuListener implements ActionListener {
 					fileName += ".pws";
 				
 				try {
-					FileInputStream fileIn = new FileInputStream(fileName);
-					ObjectInputStream simIn = new ObjectInputStream(fileIn);
-					con.model = (Simulation)simIn.readObject();
+					
+					ProgressMonitorInputStream monitor = new ProgressMonitorInputStream(con.view.getMain(), "Loading " + fileName, new FileInputStream(fileName));
+					ObjectInputStream simIn = new ObjectInputStream(monitor);
+					con.model = (Simulation) simIn.readObject();
 					con.model.addObserver(con.view);
-					con.view.addGrid(500,500, con);
+					con.view.addGrid(con.model.getHeightMap(), con);
 					con.view.loadState(con.model);
 					simIn.close();
-					fileIn.close();
+					monitor.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				} catch (ClassNotFoundException e1) {
@@ -97,6 +134,31 @@ public class MenuListener implements ActionListener {
 				}
 				
 			}
+			
+		}
+		
+		//----------------------------------------------------------------------------
+		
+		//View Menu
+		//----------------------------------------------------------------------------
+		
+		//Toggle red avoidance radii
+		else if(e.getActionCommand().equals("Show Avoidance")){
+			
+			con.view.getGrid().toggleShowAvoid();
+			
+		}
+		
+		//Toggle green neighbour radii
+		else if(e.getActionCommand().equals("Show Neighbours")){
+			
+			con.view.getGrid().toggleShowNeighbours();
+			
+		}
+		
+		else if(e.getActionCommand().equals("Show Grid")){
+			
+			con.view.toggleGrid();
 			
 		}
 		

@@ -1,4 +1,4 @@
-	//Driver class containing main method
+//Driver class containing main method
 
 import plainswalker.GUI.Interface;
 import plainswalker.controller.Controller;

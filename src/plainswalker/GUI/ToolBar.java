@@ -16,6 +16,7 @@ public class ToolBar{
 	protected JButton waypointButton;
 	protected JButton herdAnimalButton;
 	protected JButton predatorButton;
+	protected JButton obstacleButton;
 	protected JButton start;
 	protected JButton stop;
 	
@@ -42,8 +43,14 @@ public class ToolBar{
 		predatorButton.setActionCommand("Predator");
 		tools.add(predatorButton);
 		
+		//Obstacle Button
+		obstacleButton = new JButton("O");
+		obstacleButton.setToolTipText("Obstacle Painting Mode");
+		obstacleButton.setActionCommand("Obstacle");
+		tools.add(obstacleButton);
+		
 		//Start Button
-		start = new JButton("Start");
+		start = new JButton("Play");
 		start.setToolTipText("Start Simulation");
 		start.setActionCommand("Play");
 		start.setEnabled(false);
@@ -78,6 +85,30 @@ public class ToolBar{
 	public void stopEnabled(boolean set){
 		
 		stop.setEnabled(set);
+		
+	}
+	
+	public void togglePlayPause(){
+		
+		if(start.getActionCommand().equals("Play")){
+			
+			start.setText("Pause");
+			start.setActionCommand("Pause");
+			
+		}
+		else{
+			
+			start.setText("Play");
+			start.setActionCommand("Play");
+			
+		}
+		
+	}
+
+	public void resetStart() {
+		
+		start.setText("Play");
+		start.setActionCommand("Play");
 		
 	}
 	

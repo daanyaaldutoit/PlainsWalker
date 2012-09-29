@@ -14,12 +14,13 @@ public class HerdAnimal extends Animal{
 	private float accumulator = 1f;
 	private float maxVel = 1.5f;
 	
-	public HerdAnimal(Vector3D p){
+	//Instatiate with a pos and herd number
+	public HerdAnimal(Vector3D p, int index){
 		
 		position = p;
 		velocity = new Vector3D();
 		accelaration = new Vector3D();
-		herdIndex = 0;
+		herdIndex = index;
 		
 	}
 
@@ -56,7 +57,7 @@ public class HerdAnimal extends Animal{
 		avoid = avoid.multiply(0.9f);
 		centering = centering.multiply(0.8f);
 		matching = matching.multiply(0.1f);
-		route = route.multiply(0.6f);
+		route = route.multiply(0.95f);
 		
 		//Build acceleration with following priority order: route, avoid, matching, centering
 		float magAccumulator = 0;
@@ -101,7 +102,8 @@ public class HerdAnimal extends Animal{
 	protected void processNeighbours(ArrayList<Animal> avoid,
 			ArrayList<HerdAnimal> neighbours, Simulation s) {
 		
-		for(Animal a: s.herds[herdIndex].anims)
+		for(int i = 0; i < 9; ++i){
+		for(Animal a: s.herds[i].anims)
 			if(!a.equals(this)){
 				
 				if(shouldAvoid(a)){//avoidance	
@@ -109,7 +111,7 @@ public class HerdAnimal extends Animal{
 					avoid.add(a);
 					
 					}
-				if(position.distance(a.position) <= neighbourRad){//neighbours
+				if(i == herdIndex && position.distance(a.position) <= neighbourRad){//neighbours
 					
 					neighbours.add((HerdAnimal) a);
 					
@@ -117,18 +119,20 @@ public class HerdAnimal extends Animal{
 				
 			}
 		
-		for(Animal a: s.packs[0].preds){
+		for(Animal a: s.packs[i].preds){
 			
 			if(shouldAvoid(a))
 				avoid.add(a);
 			
 		}
 		
+		}
+		
 	}
 
-	public int getARad() {
-		return avoidRad;
-	}
+	public int getARad() {return avoidRad;}
+	
+	public int getIndex(){return herdIndex;}
 	
 	protected boolean shouldAvoid(Animal a){
 		
@@ -146,8 +150,11 @@ public class HerdAnimal extends Animal{
 		
 		for(Animal a: avoid){
 			
+			int weight = 1;
 			Vector3D dir = position.minus(a.position);
-			aDir = aDir.plus(dir.multiply(1/(dir.mag()*dir.mag())));
+			if(a instanceof Predator)
+				weight = 10;
+			aDir = aDir.plus(dir.multiply(weight/(dir.mag()*dir.mag())));
 			
 		}
 		
@@ -194,26 +201,5 @@ public class HerdAnimal extends Animal{
 		return toWaypoint.normalize();
 			
 	}
-	
-	//----------------------------------------------------------------------------
-
-	//Serialization methods
-	//----------------------------------------------------------------------------
-	
-	/*private void writeObject(ObjectOutputStream stream)
-	        throws IOException{
-		
-		stream.writeObject(position);
-		
-	}
-	
-	private void readObject(ObjectInputStream stream)
-	        throws IOException, ClassNotFoundException{
-		
-		position = (Vector3D)stream.readObject();
-		
-	}*/
-	
-	//----------------------------------------------------------------------------
 	
 }

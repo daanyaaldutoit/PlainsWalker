@@ -14,12 +14,14 @@ public class PredatorMarker extends JComponent{
 
 	public static Dimension SIZE = new Dimension(Predator.avoidRad*2, Predator.avoidRad*2);
 	private static final long serialVersionUID = 1L;
+	protected boolean showARadius = false;
 	
 	//Set up animal
-	public PredatorMarker(Vector3D pos){
+	public PredatorMarker(Vector3D pos, boolean showARad){
 			
 		setLocation(pos);
 		setSize(SIZE);
+		showARadius = showARad;
 			
 	}
 	
@@ -30,6 +32,7 @@ public class PredatorMarker extends JComponent{
 			
 		((Graphics2D) g).setPaint(Color.RED);
 		g.fillRect(SIZE.width/2-5, SIZE.height/2-5, 10, 10);
+		if(showARadius)
 		g.drawArc(0, 0, SIZE.width-1, SIZE.height-1, 0, 360);
 
 	}

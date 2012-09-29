@@ -3,19 +3,33 @@
 package plainswalker.simulation;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Observable;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import plainswalker.GUI.Grid;
 
 public class Simulation extends Observable implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	protected Tile[][] tiles;
-	final static float TIMESTEP = 0.001f;
-	protected Herd[] herds = new Herd[10];	//tenth herd is list of unassigned animals
-	protected LinkedList<Vector3D>[] routes = new LinkedList[10];
-	protected Pack[] packs = new Pack[10];
+	protected HeightMap hMap;
+	final static float TIMESTEP = 0.005f;	//timestep in seconds
+	protected Herd[] herds = new Herd[9];	//tenth herd is list of unassigned animals
+	protected LinkedList<Vector3D>[] routes = new LinkedList[9];
+	protected Pack[] packs = new Pack[9];
 	private transient Thread updator;
+	
+	//Animation variables
+	protected transient ArrayList<ArrayList<Frame>> frameStorage;
+	protected transient ArrayList<Frame> frames;
+	protected transient int curFrame = 0;
+	protected transient boolean paused = false;
+	
+	int toFrame = 0;
 	
 	//allows realtime changes to environment
 	private class Updator implements Runnable{
@@ -25,33 +39,67 @@ public class Simulation extends Observable implements Serializable{
 		public Updator(Simulation s){
 			
 			sim = s;
+			frameStorage = new ArrayList<ArrayList<Frame>>();
+			frameStorage.add(new ArrayList<Frame>());
+			curFrame = 0;
 			
 		}
 		
 		public void run() {
-			
-				//test
-				herds[0].route = routes[0];
 				
-				while(true){
-				for(Herd h : herds){
-					h.goToWaypoint(sim);
+				//test
+				herds[0].assignRoute(routes[0]);
+				
+				while(!Thread.interrupted()){
+					
+						if(frameStorage.get(frameStorage.size()-1).size() >= 20000){
+							frameStorage.add(new ArrayList<Frame>());
+						}
+							
+						for(Herd h : herds){
+							h.goToWaypoint(sim);
+				
+						}
+				
+						if(++toFrame == 10){
+							frameStorage.get(frameStorage.size()-1).add(new Frame(herds, packs));
+							toFrame = 0;
+						}
+						
+						if(curFrame < frameStorage.get(frameStorage.size()-1).size() && !paused){
+						
+							setChanged();
+							notifyObservers(frameStorage.get(frameStorage.size()-1).get(curFrame++));
+							if(curFrame == 20000-1)
+								curFrame = 0;
+						
+						}
+		
 				}
+				
 				setChanged();
-				notifyObservers(herds);
+				notifyObservers(frameStorage.get(0).get(0));
+				
+				for(int i = 0; i < 9; ++i){
+					herds[i] = frameStorage.get(0).get(0).herds[i];
+					packs[i] = frameStorage.get(0).get(0).packs[i];
+				
 				}
+		
 		}
 		
 	}
 	
-	public Simulation(int l, int w){
+	public Simulation(HeightMap map){
 		
-		tiles = new Tile[l][w];
-		for(int i = 0; i < l; ++i)
-			for(int j = 0; j < w; ++j)
-				tiles[i][j] = new Tile(j, i, 0f);
+		hMap = map;
 		
-		for(int i = 0; i < 10; ++i){
+		tiles = new Tile[map.length][map.width];
+		for(int i = 0; i < map.length; ++i)
+			for(int j = 0; j < map.width; ++j)
+				tiles[i][j] = new Tile(j, i, 0);
+		
+		for(int i = 0; i < 9; ++i){
 			herds[i] = new Herd();
 			routes[i] = new LinkedList<Vector3D>();
 			packs[i] = new Pack();
@@ -59,25 +107,37 @@ public class Simulation extends Observable implements Serializable{
 		
 	}
 	
+	public Simulation(int i, int j) {
+		// TODO Auto-generated constructor stub
+	}
+
 	//return height value at tile
-	public float getHeight(int x, int y){
+	public double getHeight(int x, int y){
 		
-		return tiles[y/30][x/30].getHeight();
+		return hMap.heightgrid[y/Grid.blockSize][x/Grid.blockSize];
 		
 	}
 	
 	//Save state and begin processing
 	public void start(){
-			
-		updator = new Thread(new Updator(this));
-		updator.start();
+		
+		if(paused == false){
+		
+			updator = new Thread(new Updator(this));
+			//Timer t = new Timer(updator.getName());
+			//t.scheduleAtFixedRate(new Updator(this), 0, (long) (TIMESTEP*1000));
+			updator.start();
+		
+		}
+		else
+			paused = false;
 		
 	}
 	
 	//Add animal to a herd
-	public void addAnimal(HerdAnimal a, int index){
+	public void addAnimal(HerdAnimal a){
 		
-		herds[index].anims.add(a);
+		herds[a.herdIndex].anims.add(a);
 		setChanged();
 		notifyObservers(a);
 		
@@ -103,13 +163,15 @@ public class Simulation extends Observable implements Serializable{
 	
 	public void pause() {
 		
-		updator.interrupt();
+		paused = true;
 		
 	}
 
 	public void stop() {
 		
 		updator.interrupt();
+		updator = null;
+		paused = false;
 		
 	}
 
@@ -128,22 +190,18 @@ public class Simulation extends Observable implements Serializable{
 		return packs;
 	}
 	
-	//------------------------------------------------------------------------
-	
-	/*private void writeObject(ObjectOutputStream stream)
-	        throws IOException{
-		
-		for(int i = 0; i < 10; ++i)
-			stream.writeObject(herds[i]);
-		
+	public Tile[][] getTiles(){
+		return tiles;
 	}
 	
-	private void readObject(ObjectInputStream stream)
-	        throws IOException, ClassNotFoundException{
+	public HeightMap getHeightMap(){return hMap;}
+
+	public void setPassable(int x, int y, boolean pass) {
 		
-		for(int i = 0; i < 10; ++i)
-			herds[i] = (Herd)stream.readObject();
+		tiles[y][x].passable = pass;
+		setChanged();
+		notifyObservers(tiles[y][x]);
 		
-	}*/
+	}
 	
 }

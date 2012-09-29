@@ -20,46 +20,44 @@ public class ToolBarListener implements ActionListener {
 		//Activate Animal mode
 		if(e.getActionCommand().equals("Animal"))
 			{
-				System.out.println("Animal Mode");
 				con.curMode = Controller.placerMode.HERD_ANIMAL;
 			}
 		//Activate Waypoint mode
 		else if(e.getActionCommand().equals("Waypoint"))
 			{
-			
-				System.out.println("Waypoint Mode");
 				con.curMode = Controller.placerMode.WAYPOINT;
-			
 			}
 		//Activate Predator mode
 		else if(e.getActionCommand().equals("Predator"))
 			{
-				System.out.println("Predator Mode");
 				con.curMode = Controller.placerMode.PREDATOR;
-				
+			}
+		//Activate Obstacle mode
+		else if(e.getActionCommand().equals("Obstacle"))
+			{
+				con.curMode = Controller.placerMode.OBSTACLE;
 			}
 		//Start simulation
 		else if(e.getActionCommand().equals("Play")){
 			
 			con.model.start();
-			//start.setActionCommand("Pause");
-			//start.setText("Pause");
+			con.view.getToolbar().togglePlayPause();
 			con.view.getToolbar().stopEnabled(true);
 			
 		}
 		//Pause simulation at current frame
 		else if(e.getActionCommand().equals("Pause")){
 			
-			//gui.sim.pause();
-			//start.setActionCommand("Play");
-			//start.setText("Play");
+			con.model.pause();
+			con.view.getToolbar().togglePlayPause();
 			
 		}
+		//Reset to start of simulation
 		else if(e.getActionCommand().equals("Stop")){
 			
-			//gui.sim.stop();
-			//stop.setEnabled(false);
-			//start.setActionCommand("Play");
+			con.model.stop();
+			con.view.getToolbar().stopEnabled(false);
+			con.view.getToolbar().resetStart();
 			
 		}
 		

@@ -25,6 +25,8 @@ public class Simulation extends Observable implements Serializable{
 	protected Pack[] packs = new Pack[9];
 	private transient Thread updator;
 	
+	protected AStar astar;
+	
 	//Animation variables
 	protected transient ArrayList<ArrayList<Frame>> frameStorage;
 	protected transient ArrayList<Frame> frames;
@@ -107,6 +109,8 @@ public class Simulation extends Observable implements Serializable{
 			for(int j = 0; j < h.width; ++j)
 				tiles[i][j] = new Tile(j, i, 0);
 		
+		astar = new AStar(this);
+		
 		for(int i = 0; i < 9; ++i){
 			herds[i] = new Herd();
 			routes[i] = new LinkedList<Waypoint>();
@@ -118,7 +122,7 @@ public class Simulation extends Observable implements Serializable{
 	//return height value at tile
 	public double getHeight(int x, int y){
 		
-		return terrain.getHeight(x/Grid.blockSize, y/Grid.blockSize);
+		return terrain.getHeight(x/3, y/3);
 		
 	}
 	

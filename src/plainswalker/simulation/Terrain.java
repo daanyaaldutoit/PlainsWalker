@@ -6,13 +6,14 @@ package plainswalker.simulation;
 import java.io.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
-public class Terrain{
-	private HeightMap heights;
+public class Terrain implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	protected HeightMap heights;
 	protected double[][] landscape;
 	protected int width, length;
 	double highest, lowest, range;
@@ -63,6 +64,22 @@ public class Terrain{
 				// colour in that pixel with the relevant height data
 				double currHeight = landscape[x][y];
 				float heightPercent = (float)((currHeight-lowest)/range);
+				
+				// coloured heightmap using overflow of the RGB values
+				/*float red = 0, blue = 0; 	// initialize blue & green to zero 
+				float green = heightPercent;
+				if (green > 1){ 	// colour overflow spills into the next color
+					red = green-1; 
+					green = 1;
+					if (red > 1){
+						blue = red - 1;
+						red = 1;
+						if (blue > 1){
+							blue = 1;
+						}
+					}
+				}
+				imageCreator.setColor(new Color(red, green, blue));*/
 				
 				imageCreator.setColor(new Color(heightPercent, heightPercent, heightPercent));
 				imageCreator.fillRect(x, y, 1, 1);

@@ -3,6 +3,9 @@
 package plainswalker.simulation;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+
+import plainswalker.GUI.Grid;
 
 public class HerdAnimal extends Animal{
 	
@@ -13,6 +16,7 @@ public class HerdAnimal extends Animal{
 	protected int herdIndex;
 	private float accumulator = 1f;
 	private float maxVel = 1.5f;
+	protected transient LinkedList<AStar.Node> aStarRoute;
 	
 	//Instatiate with a pos and herd number
 	public HerdAnimal(Vector3D p, int index){
@@ -51,7 +55,7 @@ public class HerdAnimal extends Animal{
 		Vector3D route = new Vector3D();
 		
 		if(s.herds[herdIndex].route.size() > 0)
-			route = goTo(s.herds[herdIndex].route.getFirst());
+			route = goTo(s);
 		
 		//Adjust by component strength between 0 and 1
 		avoid = avoid.multiply(0.9f);
@@ -194,11 +198,32 @@ public class HerdAnimal extends Animal{
 		
 	}
 	
-	//Direction to next waypoint
-	protected Vector3D goTo(Vector3D way) {
+	//Direction to next astar point
+	protected Vector3D goTo(Simulation s){
+		
+		//attempt to fetch next point
+		if(!aStarRoute.isEmpty()){
+		
+			Vector3D aStarCur = new Vector3D(aStarRoute.peek().x*Grid.blockSize, aStarRoute.peek().y*Grid.blockSize, 0);
 			
-		Vector3D toWaypoint = way.minus(position);
-		return toWaypoint.normalize();
+			//if at destination, pop
+			if(aStarCur.distance(position) <= 15)
+				aStarRoute.pop();
+			else if(aStarRoute.size() > 1 && aStarCur.distance(position) > 60)
+				aStarRoute = s.astar.getPath((int)position.x/Grid.blockSize, (int)position.y/Grid.blockSize
+						, (int)s.herds[herdIndex].route.peek().x/Grid.blockSize, (int)s.herds[herdIndex].route.peek().y/Grid.blockSize);
+			
+		}
+		
+		//move to point
+		if(aStarRoute != null && !aStarRoute.isEmpty()){
+			
+			Vector3D toWaypoint = new Vector3D(aStarRoute.peek().x*Grid.blockSize, aStarRoute.peek().y*Grid.blockSize, 0).minus(position);
+			return toWaypoint.normalize();
+			
+		}
+		
+		return new Vector3D();
 			
 	}
 	

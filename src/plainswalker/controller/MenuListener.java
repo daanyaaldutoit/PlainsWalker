@@ -21,7 +21,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import plainswalker.simulation.HeightMap;
 import plainswalker.simulation.Simulation;
-import plainswalker.simulation.Terrain;
 
 public class MenuListener implements ActionListener {
 

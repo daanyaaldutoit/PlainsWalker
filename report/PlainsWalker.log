@@ -1,9 +1,8 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2012.5.15)  1 OCT 2012 00:16
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2012.5.15)  1 OCT 2012 00:49
 entering extended mode
 **PlainsWalker.tex
-
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\PlainsWalker.tex"
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\PlainsWalker.tex
+"
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -224,26 +223,19 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip49
 )
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\PlainsWalker.aux"
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\title.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\abstract.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\specification.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\manual.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\conceptual_overview.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\design.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\validation.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\results.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\conclusion.aux"))
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\PlainsWalker.aux
+" ("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\title.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\abstract.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\specification.au
+x") ("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\manual.aux")
+
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\conceptual_overv
+iew.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\design.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\validation.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\results.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\conclusion.aux")
+)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
 LaTeX Font Info:    ... okay on input line 14.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
@@ -260,8 +252,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 14.
 LaTeX Font Info:    ... okay on input line 14.
 \AtBeginShipoutBox=\box28
 Package hyperref Info: Link coloring OFF on input line 14.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2010/04/30 v2.40 Cross-referencing by name of section
 
 ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
@@ -273,93 +264,85 @@ LaTeX Info: Redefining \ref on input line 14.
 LaTeX Info: Redefining \pageref on input line 14.
 LaTeX Info: Redefining \nameref on input line 14.
 
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\PlainsWalker.out")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\PlainsWalker.out")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\PlainsWalker.out
+")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\PlainsWalker.out
+")
 \@outlinefile=\write3
-
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\title.tex") [1
+ ("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\title.tex")
+[1
 
 
 {C:/Users/USS Enterprise/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\abstract.tex") [2
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\abstract.tex")
+[2
 
 
 ]
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\PlainsWalker.toc"
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\PlainsWalker.toc
+"
 LaTeX Font Info:    Try loading font information for U+msa on input line 2.
  ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
 LaTeX Font Info:    Try loading font information for U+msb on input line 2.
- ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 ) [3
 
 ])
 \tf@toc=\write4
  [4]
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\specification.tex") [5
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\specification.te
+x") [5
 
 ]
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\manual.tex" [6
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\manual.tex"
+[6
 
 
 ] [7] [8]) [9]
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\conceptual_overview.tex") [10
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\conceptual_overv
+iew.tex") [10
 
 
 ]
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\design.tex") [11
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\design.tex")
+[11
 
 
 ]
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\validation.tex") [12
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\validation.tex")
+[12
 
 
-]
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\results.tex") [13
+] ("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\results.tex") 
+[13
 
 
 ] [14]
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\conclusion.tex") [15
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\conclusion.tex")
+[15
 
 
 ]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 33.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 33.
 
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\PlainsWalker.aux"
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\title.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\abstract.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\specification.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\manual.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\conceptual_overview.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\design.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\validation.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\results.aux")
-("C:\Users\USS Enterprise\Dropbox\UCT\2012\Comp Sci\CSC3003S\Crowd Animation\re
-port\conclusion.aux"))
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\PlainsWalker.aux
+" ("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\title.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\abstract.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\specification.au
+x") ("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\manual.aux")
+
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\conceptual_overv
+iew.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\design.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\validation.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\results.aux")
+("C:\Users\USS Enterprise\Documents\GitHub\PlainsWalker\report\conclusion.aux")
+)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 33.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 33.
 Package rerunfilecheck Info: File `PlainsWalker.out' has not changed.
@@ -367,7 +350,7 @@ Package rerunfilecheck Info: File `PlainsWalker.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  5179 strings out of 494045
- 79047 string characters out of 3148360
+ 77640 string characters out of 3148360
  154888 words of memory out of 3000000
  8335 multiletter control sequences out of 15000+200000
  14748 words of font info for 55 fonts, out of 3000000 for 9000

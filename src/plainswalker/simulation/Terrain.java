@@ -18,12 +18,6 @@ public class Terrain implements Serializable{
 	protected int width, length;
 	double highest, lowest, range;
 	
-	// FOR TESTING: REMOVE LATER
-	/*public static void main(String[] args) throws FileNotFoundException, IOException {
-		Terrain t = new Terrain("GC3.map", 1000, 1000);
-		t.saveBufferedImage(t.getBufferedImage(), "GC3");
-	}*/
-	
 	// constructor -- takes in a heightmap, and a width and length
 	// the terrain will have as many unit steps as specified by length and width
 	public Terrain(HeightMap h, int w, int l) throws FileNotFoundException, IOException {

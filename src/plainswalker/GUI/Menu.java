@@ -2,14 +2,12 @@
 
 package plainswalker.GUI;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 
 public class Menu{
 
@@ -29,7 +27,7 @@ public class Menu{
 	protected JCheckBoxMenuItem showGrid;
 	
 	//Set up all menu items
-	public Menu(JPanel container, Interface inter){
+	public Menu(){
 		
 		menu = new JMenuBar();
 		
@@ -84,8 +82,6 @@ public class Menu{
 		showGrid.setActionCommand("Show Grid");
 		showGrid.setState(true);
 		viewMenu.add(showGrid);
-		
-		container.add(menu, BorderLayout.NORTH);
 		
 	}
 	

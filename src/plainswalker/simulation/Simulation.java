@@ -19,7 +19,7 @@ public class Simulation extends Observable implements Serializable{
 	protected HeightMap hMap;
 	final static float TIMESTEP = 0.005f;	//timestep in seconds
 	protected Herd[] herds = new Herd[9];	//tenth herd is list of unassigned animals
-	protected LinkedList<Vector3D>[] routes = new LinkedList[9];
+	protected LinkedList<Waypoint>[] routes = new LinkedList[9];
 	protected Pack[] packs = new Pack[9];
 	private transient Thread updator;
 	
@@ -47,9 +47,6 @@ public class Simulation extends Observable implements Serializable{
 		
 		public void run() {
 				
-				//test
-				herds[0].assignRoute(routes[0]);
-				
 				while(!Thread.interrupted()){
 					
 						if(frameStorage.get(frameStorage.size()-1).size() >= 20000){
@@ -60,6 +57,9 @@ public class Simulation extends Observable implements Serializable{
 							h.goToWaypoint(sim);
 				
 						}
+						
+						for(Pack p: packs)
+							p.goToWaypoint(sim);
 				
 						if(++toFrame == 10){
 							frameStorage.get(frameStorage.size()-1).add(new Frame(herds, packs));
@@ -101,14 +101,10 @@ public class Simulation extends Observable implements Serializable{
 		
 		for(int i = 0; i < 9; ++i){
 			herds[i] = new Herd();
-			routes[i] = new LinkedList<Vector3D>();
+			routes[i] = new LinkedList<Waypoint>();
 			packs[i] = new Pack();
 		}
 		
-	}
-	
-	public Simulation(int i, int j) {
-		// TODO Auto-generated constructor stub
 	}
 
 	//return height value at tile
@@ -117,6 +113,41 @@ public class Simulation extends Observable implements Serializable{
 		return hMap.heightgrid[y/Grid.blockSize][x/Grid.blockSize];
 		
 	}
+	
+	//Adding options
+	//-----------------------------------------------------------------------------------------
+	
+	//Add animal to a herd
+	public void addAnimal(HerdAnimal a){
+		
+		herds[a.herdIndex].anims.add(a);
+		setChanged();
+		notifyObservers(a);
+		
+	}
+	
+	//Add waypoint to route
+	public void addWaypoint(Waypoint way){
+		
+		routes[way.wayIndex].add(way);
+		setChanged();
+		notifyObservers(way);
+		
+	}
+	
+	//Add predator to world
+	public void addPredator(Predator p){
+		
+		packs[p.packIndex].preds.add(p);
+		setChanged();
+		notifyObservers(p);
+		
+	}
+	
+	//------------------------------------------------------------------------------------------
+	
+	//Video options
+	//-------------------------------------------------------------------------------------------
 	
 	//Save state and begin processing
 	public void start(){
@@ -134,33 +165,6 @@ public class Simulation extends Observable implements Serializable{
 		
 	}
 	
-	//Add animal to a herd
-	public void addAnimal(HerdAnimal a){
-		
-		herds[a.herdIndex].anims.add(a);
-		setChanged();
-		notifyObservers(a);
-		
-	}
-	
-	//Add waypoint to route
-	public void addWaypoint(Vector3D way, int index){
-		
-		routes[index].add(way);
-		setChanged();
-		notifyObservers(way);
-		
-	}
-	
-	//Add predator to world
-	public void addPredator(Predator p, int index){
-		
-		packs[index].preds.add(p);
-		setChanged();
-		notifyObservers(p);
-		
-	}
-	
 	public void pause() {
 		
 		paused = true;
@@ -174,15 +178,17 @@ public class Simulation extends Observable implements Serializable{
 		paused = false;
 		
 	}
+	
+	//----------------------------------------------------------------------------------------------
 
 	//Getters for simulation elements
-	//----------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------------
 	
 	public Herd[] getHerds() {
 		return herds;
 	}
 
-	public LinkedList<Vector3D>[] getRoutes() {
+	public LinkedList<Waypoint>[] getRoutes() {
 		return routes;
 	}
 
@@ -196,6 +202,18 @@ public class Simulation extends Observable implements Serializable{
 	
 	public HeightMap getHeightMap(){return hMap;}
 
+	public void assignHerdRoute(int hIndex, int rIndex){
+		
+		herds[hIndex].assignRoute(routes[rIndex]);
+		
+	}
+	
+	public void assignPackRoute(int pIndex, int rIndex){
+		
+		packs[pIndex].assignRoute(routes[rIndex]);
+		
+	}
+	
 	public void setPassable(int x, int y, boolean pass) {
 		
 		tiles[y][x].passable = pass;

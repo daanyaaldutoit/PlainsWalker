@@ -33,6 +33,9 @@ public class Interface implements Observer{
 	private WaypointTree wTree;
 	private PackTree pTree;
 	
+	private HerdPopup hPop;
+	private PackPopup pPop;
+	
 	//Constructor to initialise components
 	public Interface(){
 		
@@ -71,12 +74,19 @@ public class Interface implements Observer{
 		tabs.addTab("Waypoints", wayPanel);
 		mainFrame.add(tabs, BorderLayout.WEST);
 		
-		menu = new Menu(upperFrame, this);
+		menu = new Menu();
+		mainFrame.setJMenuBar(menu.menu);
 		
 		tileData = new JLabel("x: y: h:");
 		mainFrame.add(tileData, BorderLayout.SOUTH);
 		
 		tools = new ToolBar(upperFrame);
+		
+		hPop = new HerdPopup();
+		hTree.herdTree.setComponentPopupMenu(hPop.herdPop);
+		
+		pPop = new PackPopup();
+		pTree.packTree.setComponentPopupMenu(pPop.packPop);
 	
 	}
 	
@@ -106,15 +116,17 @@ public class Interface implements Observer{
 		}
 		
 		//New Waypoint
-		else if(change instanceof Vector3D){
+		else if(change instanceof Waypoint){
+			
+			Waypoint wChange = (Waypoint)change;
 			
 			//Add new node to appropriate route in tree
 			DefaultTreeModel model = (DefaultTreeModel) wTree.wayTree.getModel();
-			model.insertNodeInto(new DefaultMutableTreeNode("Waypoint " + wTree.routes[0].getChildCount()), wTree.routes[0], wTree.routes[0].getChildCount());
+			model.insertNodeInto(new DefaultMutableTreeNode("Waypoint " + wTree.routes[wChange.getIndex()].getChildCount()), wTree.routes[wChange.getIndex()], wTree.routes[wChange.getIndex()].getChildCount());
 			
-			WaypointMarker mark = new WaypointMarker(((Vector3D) change));
+			WaypointMarker mark = new WaypointMarker(wChange);
 			grid.add(mark);
-			grid.wayMarks[0].add(mark);
+			grid.wayMarks[wChange.getIndex()].add(mark);
 			gridFrame.validate();
 			gridFrame.repaint();
 		}
@@ -122,13 +134,15 @@ public class Interface implements Observer{
 		//New Predator
 		else if(change instanceof Predator){
 			
+			Predator pChange = (Predator) change;
+			
 			//Add new node to appropriate route in tree
 			DefaultTreeModel model = (DefaultTreeModel) pTree.packTree.getModel();
-			model.insertNodeInto(new DefaultMutableTreeNode("Predator " + pTree.packs[0].getChildCount()), pTree.packs[0], pTree.packs[0].getChildCount());
+			model.insertNodeInto(new DefaultMutableTreeNode("Predator " + pTree.packs[pChange.getIndex()].getChildCount()), pTree.packs[pChange.getIndex()], pTree.packs[pChange.getIndex()].getChildCount());
 			
-			PredatorMarker mark = new PredatorMarker(((Predator) change).getPosition(), menu.showAvoid.isSelected());
+			PredatorMarker mark = new PredatorMarker(pChange.getPosition(), menu.showAvoid.isSelected());
 			grid.add(mark);
-			grid.predMarks[0].add(mark);
+			grid.predMarks[pChange.getIndex()].add(mark);
 			gridFrame.validate();
 			gridFrame.repaint();
 		}
@@ -172,6 +186,14 @@ public class Interface implements Observer{
 		
 		tools.setListener(con.getTListen());
 		menu.setListener(con.getMListen());
+		for(int i = 0; i < 9; ++i){
+			
+			for(int j = 0; j < 9; ++j){
+				hPop.herdMenus[i].getItem(j).addActionListener(con.getPListen());
+				pPop.packMenus[i].getItem(j).addActionListener(con.getPListen());
+			}
+			
+		}
 		
 	}
 	
@@ -198,6 +220,10 @@ public class Interface implements Observer{
 	
 	public ToolBar getToolbar(){ return tools;}
 	
+	public HerdPopup getHerdPopup() { return hPop;}
+	
+	public PackPopup getPackPopup() { return pPop;}
+	
 	//------------------------------------------------------------------------------------------------------
 
 	//Display information about tile at mouse's location
@@ -216,7 +242,7 @@ public class Interface implements Observer{
 				update(old, ha);
 		
 		//Restore waypoint markers
-		for(LinkedList<Vector3D> r: old.getRoutes())
+		for(LinkedList<Waypoint> r: old.getRoutes())
 			for(Vector3D way: r)
 				update(old, way);
 		

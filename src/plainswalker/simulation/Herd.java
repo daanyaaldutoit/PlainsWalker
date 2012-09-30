@@ -10,7 +10,7 @@ public class Herd implements Serializable{
 	
 	protected transient Vector3D center;
 	protected ArrayList<HerdAnimal> anims = new ArrayList<HerdAnimal>();
-	protected LinkedList<Vector3D> route = new LinkedList<Vector3D>();
+	protected LinkedList<Waypoint> route = new LinkedList<Waypoint>();
 	
 	public void goToWaypoint(Simulation s){
 		
@@ -30,11 +30,11 @@ public class Herd implements Serializable{
 	
 	public ArrayList<HerdAnimal> getAnims(){return anims;}
 	
-	public void assignRoute(LinkedList<Vector3D> r){
+	public void assignRoute(LinkedList<Waypoint> routes){
 		
-		route = new LinkedList<Vector3D>();
-		for(Vector3D v: r)
-			route.add(v);
+		route = new LinkedList<Waypoint>();
+		for(Waypoint w: routes)
+			route.add(w);
 		
 	}
 	

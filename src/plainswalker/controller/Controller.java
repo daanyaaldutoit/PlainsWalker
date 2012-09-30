@@ -17,7 +17,7 @@ import plainswalker.simulation.Simulation;
 
 public class Controller{
 
-	//Switches placement between prey, waypoints and predators
+	//Switches placement between prey, waypoints, predators and obstacles
 	public enum placerMode {HERD_ANIMAL, WAYPOINT, PREDATOR, OBSTACLE};
 	protected placerMode curMode = placerMode.HERD_ANIMAL;
 	
@@ -25,10 +25,12 @@ public class Controller{
 	private ToolBarListener tListen = new ToolBarListener(this);
 	private GridListener gListen = new GridListener(this);
 	private MenuListener mListen = new MenuListener(this);
+	private PopupListener pListen = new PopupListener(this);
 	
 	protected Interface view;
 	protected Simulation model;
 	
+	//Change current herd/route/pack being assigned to 
 	Action changeIndex = new AbstractAction(){
 		
 		private static final long serialVersionUID = 1L;
@@ -55,7 +57,7 @@ public class Controller{
 		
 		view = v;
 
-		//Set herd index change key bindings
+		//Set index change key bindings
 		for(int i = 0; i < 9; ++i){
 		
 			view.getMain().getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_1+i, 0, false), "Change to " +i+1);
@@ -76,6 +78,10 @@ public class Controller{
 
 	public GridListener getGListen() {
 		return gListen;
+	}
+	
+	public PopupListener getPListen(){
+		return pListen;
 	}
 	
 }

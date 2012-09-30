@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -33,9 +34,12 @@ public class Grid extends JPanel implements Scrollable{
 	protected LinkedList<WaypointMarker>[] wayMarks = new LinkedList[9];
 	protected ArrayList<PredatorMarker>[] predMarks = new ArrayList[9];
 	
+	private AffineTransform scale = new AffineTransform();
+	
 	//Set up grid parameters
 	public Grid(HeightMap h){
 		
+		scale.scale(3, 3);
 		length = h.getLength();
 		width = h.getWidth();
 		heightMap = h.getBufferedImage(width*5, 5*length);
@@ -59,14 +63,14 @@ public class Grid extends JPanel implements Scrollable{
 		super.paintComponent(g);
 		Graphics2D g2D = (Graphics2D)g;
 		
-		g2D.drawImage(heightMap, 0, 0, null);
+		g2D.drawImage(heightMap, scale, null);
 		
 		//Draw links between waypoints
 		g2D.setColor(Color.BLUE);
 		for(int i = 0; i < 9; ++i){
 							
-			for(int j = 0; j < wayMarks[0].size()-1; ++j){
-				g2D.drawLine(wayMarks[0].get(j).getX(), wayMarks[0].get(j).getY(), wayMarks[0].get(j+1).getX(), wayMarks[0].get(j+1).getY());
+			for(int j = 0; j < wayMarks[i].size()-1; ++j){
+				g2D.drawLine(wayMarks[i].get(j).getX(), wayMarks[i].get(j).getY(), wayMarks[i].get(j+1).getX(), wayMarks[i].get(j+1).getY());
 						
 			}		
 							

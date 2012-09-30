@@ -1,0 +1,106 @@
+\section{User Manual}
+
+\subsection{Prerequisites}
+\subsubsection{Java}
+For the \emph{PlainsWalker} programme to run, Java SE 6 must be installed on the computer. Instructions on downloading and installing Java can be found on  \href{http://www.oracle.com/technetwork/java/javase/downloads/index.html}{Oracle's website}. 
+
+\subsubsection{Python}
+In order for the simulation to be imported into SoftImage, python 2.7 must be installed. Instructions on downloading and installing python can be found on  \href{http://www.python.org/download/}{the python website}.
+
+\subsubsection{SoftImage}
+To render a 3D version of the simulation, AutoDesk SoftImage is needed. Instructions of downloading and installing SoftImage can be found on  \href{http://usa.autodesk.com/adsk/servlet/pc/index?id=13571168&siteID=123112}{the SoftImage website}. Bear in mind that SoftImage is proprietary and, after a 30-day free trial, a product key must be bought to continue using the software.
+
+\subsubsection{Gear}
+Gear is an add-on for SoftImage, which is needed for the exported simulation. You can download Gear \href{http://opensource.studionestbarcelona.com/gear.html}{here}, and the zip download contains instructions on linking the required modules to python and installing the add-on to SoftImage.
+
+\subsection{Installing \emph{PlainsWalker}}
+\emph{PlainsWalker} is available as an executable JAR file. It also comes with Windows and Linux batch files.
+
+\subsubsection{Running From Command Line/Terminal}
+
+Windows:
+\begin{center}
+\begin{verbatim}
+C:\> cd <path to PlainsWalker.jar>
+C:\<path to PlainsWalker.jar>\> java -jar PlainsWalker.jar
+\end{verbatim}
+\end{center}
+
+
+\noindent Linux:
+\begin{center}
+\begin{verbatim}
+~$ cd <path to PlainsWalker.jar>
+<path to PlainsWalker.jar>$ java -jar PlainsWalker.jar
+\end{verbatim}
+\end{center}
+
+\subsubsection{Using the Batch File}
+A batch file is essentially a saved script which performs the above task. The benefits are that it is much simpler to use, particularly for users who are not familiar with command line interface, and it precludes the need to type out the same commands continually.
+
+\vspace{6 mm}
+
+\noindent The batch file is configured to run the jar from within the same directory; double clicking on the batch file should run the programme. If the batch file is moved - for instance to the desktop for easy access - the path must be changed. To do this, simply right-click on the file and open it in the text-editor of your choice. Then add the line
+\begin{center}
+\begin{verbatim}
+cd <path to PlainsWalker.jar>
+\end{verbatim}
+\end{center}
+\noindent at the top of the file.
+
+\subsection{Requirements for a Simulation}
+
+To run a simulation, you need a starting \emph{heightmap} file. This specifies the landscape on which the simulation will take place and should be in the following format:
+
+\begin{verbatim}
+[width] [length] [list of height values]
+\end{verbatim}
+
+\noindent \emph{width} and \emph{length} should be integers which define the size of the 2D array, and list of height values should be $\emph{width}*\emph{length}$ space-separated doubles. These numbers should all be on one line.
+
+\subsection{Starting a Simulation}
+Once the \emph{PlainsWalker} programme is open, the first step is to create a new simulation, or load an existing one.
+
+\subsubsection{New Simulation}
+To start a simulation, go to ``File $>$ New Simulation''. A dialogue will appear; navigate to where the desired heightmap is saved and select ``Open''.
+
+\subsubsection{Saving a Simulation}
+To save an existing simulation, go to ``File $>$ Save Simulation''. A dialogue will appear; navigate to the desired location for saving, choose a filename to save as and select ``Save''.
+
+\subsubsection{Loading a Saved Simulation}
+To load a previously saved simulation, go to ``File $>$ Load Simulation''. A dialogue will appear; navigate to where the previous simulation is saved and select ``Open''.
+
+\subsection{Adding Herd Animals, Predators and Waypoints}
+\subsubsection{Modes}
+To start placing objects on the landscape, select one of the buttons on the toolbar.
+
+\vspace{6 mm}
+
+\begin{tabular}{cl}
+Button Name & Meaning\\
+\hline
+H & Herd Animal\\
+
+W & Waypoint\\
+
+P & Predator\\
+
+O & Obstruction\\
+
+\end{tabular}
+
+\vspace{6 mm}
+
+\noindent This will put you in the specified mode and any clicks on the landscape will place an element of that type.
+
+\subsubsection{Groups}
+Once in a mode, press a number (0 - 9) to select which \emph{group} to assign the next placed element to. For instance, ``2''+click in \textbf{H} mode will assign a herd animal to herd 2.
+
+\subsubsection{Placing}
+Placing an object is as simple as clicking on the landscape. However, do this \emph{carefully} as the functionality of editing and deleting placed objects has not yet been added.
+
+\subsection{Running the Simulation}
+To start the simulation, press "Play". The simulation can be paused at any point, or "stopped", which will skip to the end. Restarting the simulation has not yet been implemented.
+
+\subsection{Exporting to SoftImage}
+To export to SoftImage, click the "Export" button after the simulation has ended. A dialogue will appear; choose a location and title for the animation file. Then, run "export.py" in the \emph{scripts} directory and give it the location and name of the animation file. This will generate a piece of code called "import.py" in the \emph{scripts} directory. In \emph{SoftImage}, click on the script icon (roughly the middle of the screen, right at the bottom) and open "import.py". Running the script should result in the animation correctly configuring.\footnote{ Actual zebra modelling turns out to be rather difficult and as such has not yet been implemented. For now, it is appropriate for you to see a selection of herding spheres.}

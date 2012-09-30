@@ -20,7 +20,7 @@ public class Export {
 		
 		// go through frames in the simulation;
 		// output data in the format: e x y z i j k n
-		// e := animal ID
+		// e := animal ID (e.g. "prey_1" or "pred_5")
 		// x y z := position
 		// i j k := direction (leave at 0 0 0 for now; not using it)
 		// n := timestep number (times this by ten for smoothness in SoftImage rendering)

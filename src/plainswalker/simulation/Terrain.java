@@ -59,7 +59,7 @@ public class Terrain{
 	
 	// draw the terrain to buffered image
 	private BufferedImage drawBufferedImage(){
-		BufferedImage bi = new BufferedImage(width, length, BufferedImage.TYPE_4BYTE_ABGR);
+		BufferedImage bi = new BufferedImage(width, length, BufferedImage.TYPE_BYTE_GRAY);
 		
 		// get a graphics2D object to draw onto the image
 		Graphics2D imageCreator = bi.createGraphics();
@@ -70,22 +70,6 @@ public class Terrain{
 				// colour in that pixel with the relevant height data
 				double currHeight = landscape[x][y];
 				float heightPercent = (float)((currHeight-lowest)/range);
-				
-				// coloured heightmap using overflow of the RGB values
-				/*float red = 0, blue = 0; 	// initialize blue & green to zero 
-				float green = heightPercent;
-				if (green > 1){ 	// colour overflow spills into the next color
-					red = green-1; 
-					green = 1;
-					if (red > 1){
-						blue = red - 1;
-						red = 1;
-						if (blue > 1){
-							blue = 1;
-						}
-					}
-				}
-				imageCreator.setColor(new Color(red, green, blue));*/
 				
 				imageCreator.setColor(new Color(heightPercent, heightPercent, heightPercent));
 				imageCreator.fillRect(x, y, 1, 1);

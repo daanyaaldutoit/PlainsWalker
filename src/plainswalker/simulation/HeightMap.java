@@ -65,56 +65,59 @@ public class HeightMap{
 		for (int x = 0; x < w; x++){
 			for (int y = 0; y < l; y++){
 				// to get the correct rotation of the image
-				terrain[l-y-1][w-x-1] = getInterpolatedHeight(new Point(x,y));
+				terrain[l-y-1][w-x-1] = getInterpolatedHeight(x,y);
 			}
 		}
 		return terrain;
 	}
 	
-	// get the height at a point with bilinear interpolation
-	private double getInterpolatedHeight(Point p){
+	// get the height at a point with bilinear interpolation:
+	// finds the closest known x and y points on either side of the desired point
+	// and uses the bilinear interpolation formula to find the correct height,
+	// assuming a straight line between the known points
+	private double getInterpolatedHeight(xValue, yValue){
 		// interpolated point
 		double ih;
 		
 		// if the point is on a grid intersection
-		if (p.x % xstep == 0 && p.y % ystep == 0){
-			ih = heightgrid[(int)(p.x/xstep)][(int)(p.y/ystep)];
+		if (xValue % xstep == 0 && yValue % ystep == 0){
+			ih = heightgrid[(int)(xValue/xstep)][(int)(yValue/ystep)];
 		}
 		// if the point is on a vertical gridline
-		else if (p.x % xstep == 0){
-			int y1 = (int)Math.floor(p.y/ystep);
-			int y2 = (int)Math.ceil(p.y/ystep);
-			float y = p.y/ystep;
+		else if (xValue % xstep == 0){
+			int y1 = (int)Math.floor(yValue/ystep);
+			int y2 = (int)Math.ceil(yValue/ystep);
+			float y = yValue/ystep;
 			
 			// INTERPOLATE over y
-			ih = ((y2-y)*heightgrid[(int)(p.x/xstep)][y1]/(y2-y1)) + ((y-y1)*heightgrid[(int)(p.x/xstep)][y2]/(y2-y1));
+			ih = ((y2-y)*heightgrid[(int)(xValue/xstep)][y1]/(y2-y1)) + ((y-y1)*heightgrid[(int)(xValue/xstep)][y2]/(y2-y1));
 		}
 		// if the point is on a horizontal gridline
-		else if (p.y % ystep == 0){
-			int x1 = (int)Math.floor(p.x/xstep);
-			int x2 = (int)Math.ceil(p.x/xstep);
-			float x = p.x/xstep;
+		else if (yValue % ystep == 0){
+			int x1 = (int)Math.floor(xValue/xstep);
+			int x2 = (int)Math.ceil(xValue/xstep);
+			float x = xValue/xstep;
 			
 			// INTERPOLATE over x
-			ih = (((x2-x)*heightgrid[x1][(int)(p.y/ystep)])/(x2-x1)) + (((x-x1)*heightgrid[x2][(int)(p.y/ystep)])/(x2-x1));
+			ih = (((x2-x)*heightgrid[x1][(int)(yValue/ystep)])/(x2-x1)) + (((x-x1)*heightgrid[x2][(int)(yValue/ystep)])/(x2-x1));
 		}
 		// if the point is somewhere in a gridblock
 		else{
 			double xy1Height;
 			double xy2Height;
 			
-			int x1 = (int)Math.floor(p.x/xstep);
-			int x2 = (int)Math.ceil(p.x/xstep);
-			float x = p.x/xstep;
-			int y1 = (int)Math.floor(p.y/ystep);
-			int y2 = (int)Math.ceil(p.y/ystep);
-			float y = p.y/ystep;
+			int x1 = (int)Math.floor(xValue/xstep);
+			int x2 = (int)Math.ceil(xValue/xstep);
+			float x = xValue/xstep;
+			int y1 = (int)Math.floor(yValue/ystep);
+			int y2 = (int)Math.ceil(yValue/ystep);
+			float y = yValue/ystep;
 			
 			// INTERPOLATE over y1
 			xy1Height = ((x2-x)*heightgrid[x1][y1]/(x2-x1)) + ((x-x1)*heightgrid[x2][y1]/(x2-x1));
 			// INTERPOLATE over y2
 			xy2Height = ((x2-x)*heightgrid[x1][y2]/(x2-x1)) + ((x-x1)*heightgrid[x2][y2]/(x2-x1));
-			// INTERPOLATE over p.x
+			// INTERPOLATE over xValue
 			ih = ((y2-y)*xy1Height/(y2-y1)) + ((y-y1)*xy2Height/(y2-y1));
 		}
 		

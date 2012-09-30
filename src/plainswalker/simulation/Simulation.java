@@ -107,7 +107,7 @@ public class Simulation extends Observable implements Serializable{
 		tiles = new Tile[h.length][h.width];
 		for(int i = 0; i < h.length; ++i)
 			for(int j = 0; j < h.width; ++j)
-				tiles[i][j] = new Tile(j, i, 0);
+				tiles[i][j] = new Tile(j, i);
 		
 		astar = new AStar(this);
 		

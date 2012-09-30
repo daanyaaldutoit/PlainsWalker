@@ -11,20 +11,22 @@ public class Tile implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private int xCo, yCo;
-	protected float height;
-	protected boolean passable;
+	protected boolean passable = true;
 	
-	public Tile(int x, int y, float h){
+	public Tile(int x, int y){
 		
 		xCo = x;
 		yCo = y;
-		height = h;
 		
 	}
 	
-	public float getHeight(){
+	public int getX(){return xCo;}
+	
+	public int getY(){return yCo;}
+	
+	public boolean getPassable(){
 		
-		return height;
+		return passable;
 		
 	}
 

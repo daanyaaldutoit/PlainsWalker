@@ -76,6 +76,7 @@ public class ToolBar{
 		herdAnimalButton.addActionListener(lis);
 		waypointButton.addActionListener(lis);
 		predatorButton.addActionListener(lis);
+		obstacleButton.addActionListener(lis);
 		start.addActionListener(lis);
 		stop.addActionListener(lis);
 		

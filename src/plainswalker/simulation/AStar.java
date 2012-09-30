@@ -112,7 +112,7 @@ public class AStar implements Serializable{
 					for(int j = Math.max(cur.x-1, 0); j < Math.min(cur.x+2, sim.tiles[0].length); ++j){
 						
 						//Check if tile visited or impassable
-						if(!visited[i][j] && !nodes.contains(new Node(j, i))){
+						if(!visited[i][j] && !nodes.contains(new Node(j, i)) && sim.tiles[i][j].passable){
 							
 							Node next = new Node(j, i);
 							next.g = cur.g+getCost(cur, next);

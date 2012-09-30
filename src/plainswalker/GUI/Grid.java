@@ -33,6 +33,7 @@ public class Grid extends JPanel implements Scrollable{
 	protected ArrayList<HerdAnimalMarker>[] herdMarks = new ArrayList[9];
 	protected LinkedList<WaypointMarker>[] wayMarks = new LinkedList[9];
 	protected ArrayList<PredatorMarker>[] predMarks = new ArrayList[9];
+	protected ArrayList<Rectangle> obsTiles = new ArrayList<Rectangle>();
 	
 	private AffineTransform scale = new AffineTransform();
 	
@@ -64,6 +65,11 @@ public class Grid extends JPanel implements Scrollable{
 		Graphics2D g2D = (Graphics2D)g;
 		
 		g2D.drawImage(heightMap, scale, null);
+		
+		g2D.setColor(Color.RED);
+		//Draw obstructed tiles
+		for(Rectangle r: obsTiles)
+			g2D.fillRect(r.x, r.y, r.width, r.height);
 		
 		//Draw links between waypoints
 		g2D.setColor(Color.BLUE);

@@ -3,6 +3,7 @@
 package plainswalker.GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.util.LinkedList;
 import java.util.Observable;
@@ -150,8 +151,10 @@ public class Interface implements Observer{
 		//Tile painted
 		else if(change instanceof Tile){
 			
-			
-			
+			Tile tChange = (Tile)change;
+			grid.obsTiles.add(new Rectangle(tChange.getX()*Grid.blockSize, tChange.getY()*Grid.blockSize, Grid.blockSize, Grid.blockSize));
+			gridFrame.validate();
+			gridFrame.repaint();
 		}
 		
 		//Update positions of movable components
@@ -251,6 +254,10 @@ public class Interface implements Observer{
 			for(Predator p: pack.getPreds())
 				update(old, p);
 		
+		for(Tile[] tiles: old.getTiles())
+			for(Tile tile: tiles)
+				if(!tile.getPassable())
+					update(old, tile);
 	}
 
 	public void toggleGrid() {

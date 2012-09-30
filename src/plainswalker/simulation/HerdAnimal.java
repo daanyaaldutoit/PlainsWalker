@@ -61,7 +61,7 @@ public class HerdAnimal extends Animal{
 		avoid = avoid.multiply(0.9f);
 		centering = centering.multiply(0.8f);
 		matching = matching.multiply(0.1f);
-		route = route.multiply(0.95f);
+		route = route.multiply(0.5f);
 		
 		//Build acceleration with following priority order: route, avoid, matching, centering
 		float magAccumulator = 0;
@@ -209,7 +209,7 @@ public class HerdAnimal extends Animal{
 			//if at destination, pop
 			if(aStarCur.distance(position) <= 15)
 				aStarRoute.pop();
-			else if(aStarRoute.size() > 1 && aStarCur.distance(position) > 60)
+			else if(aStarRoute.size() > 1 && aStarCur.distance(position) > 35)
 				aStarRoute = s.astar.getPath((int)position.x/Grid.blockSize, (int)position.y/Grid.blockSize
 						, (int)s.herds[herdIndex].route.peek().x/Grid.blockSize, (int)s.herds[herdIndex].route.peek().y/Grid.blockSize);
 			

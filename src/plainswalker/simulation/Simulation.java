@@ -2,6 +2,8 @@
 
 package plainswalker.simulation;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -16,7 +18,7 @@ public class Simulation extends Observable implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	protected Tile[][] tiles;
-	protected HeightMap hMap;
+	protected Terrain terrain;
 	final static float TIMESTEP = 0.005f;	//timestep in seconds
 	protected Herd[] herds = new Herd[9];	//tenth herd is list of unassigned animals
 	protected LinkedList<Waypoint>[] routes = new LinkedList[9];
@@ -90,13 +92,19 @@ public class Simulation extends Observable implements Serializable{
 		
 	}
 	
-	public Simulation(HeightMap map){
+	public Simulation(HeightMap h){
 		
-		hMap = map;
+		try {
+			terrain = new Terrain(h, h.width*5, h.length*5);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-		tiles = new Tile[map.length][map.width];
-		for(int i = 0; i < map.length; ++i)
-			for(int j = 0; j < map.width; ++j)
+		tiles = new Tile[h.length][h.width];
+		for(int i = 0; i < h.length; ++i)
+			for(int j = 0; j < h.width; ++j)
 				tiles[i][j] = new Tile(j, i, 0);
 		
 		for(int i = 0; i < 9; ++i){
@@ -110,7 +118,7 @@ public class Simulation extends Observable implements Serializable{
 	//return height value at tile
 	public double getHeight(int x, int y){
 		
-		return hMap.heightgrid[y/Grid.blockSize][x/Grid.blockSize];
+		return terrain.getHeight(x/Grid.blockSize, y/Grid.blockSize);
 		
 	}
 	
@@ -200,7 +208,7 @@ public class Simulation extends Observable implements Serializable{
 		return tiles;
 	}
 	
-	public HeightMap getHeightMap(){return hMap;}
+	public Terrain getTerrain(){return terrain;}
 
 	public void assignHerdRoute(int hIndex, int rIndex){
 		

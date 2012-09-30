@@ -198,10 +198,10 @@ public class Interface implements Observer{
 	}
 	
 	//Creates a new Grid as part of a new simulation
-	public void addGrid(HeightMap h, Controller con){
+	public void addGrid(Terrain t, Controller con){
 		
 		hTree.reset();
-		grid = new Grid(h);
+		grid = new Grid(t);
 		GridViewport gridView = new GridViewport();
 		gridView.setView(grid);
 		gridFrame.setViewport(gridView);

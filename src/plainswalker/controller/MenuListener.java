@@ -21,6 +21,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import plainswalker.simulation.HeightMap;
 import plainswalker.simulation.Simulation;
+import plainswalker.simulation.Terrain;
 
 public class MenuListener implements ActionListener {
 
@@ -54,12 +55,12 @@ public class MenuListener implements ActionListener {
 					fileName += ".map";
 				
 				try {
-					HeightMap hMap = new HeightMap(fileName);
+					HeightMap h = new HeightMap(fileName);
 					
-					con.model = new Simulation(hMap);
+					con.model = new Simulation(h);
 					con.model.addObserver(con.view);
 					
-					con.view.addGrid(hMap, con);
+					con.view.addGrid(con.model.getTerrain(), con);
 					
 					con.view.getToolbar().resetStart();
 					
@@ -123,7 +124,7 @@ public class MenuListener implements ActionListener {
 					ObjectInputStream simIn = new ObjectInputStream(monitor);
 					con.model = (Simulation) simIn.readObject();
 					con.model.addObserver(con.view);
-					con.view.addGrid(con.model.getHeightMap(), con);
+					con.view.addGrid(con.model.getTerrain(), con);
 					con.view.loadState(con.model);
 					simIn.close();
 					monitor.close();

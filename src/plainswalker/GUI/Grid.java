@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.Scrollable;
 
 import plainswalker.controller.GridListener;
-import plainswalker.simulation.HeightMap;
+import plainswalker.simulation.Terrain;
 
 public class Grid extends JPanel implements Scrollable{
 	
@@ -37,15 +37,15 @@ public class Grid extends JPanel implements Scrollable{
 	private AffineTransform scale = new AffineTransform();
 	
 	//Set up grid parameters
-	public Grid(HeightMap h){
+	public Grid(Terrain t){
 		
 		scale.scale(3, 3);
-		length = h.getLength();
-		width = h.getWidth();
-		heightMap = h.getBufferedImage(width*5, 5*length);
+		length = t.getLength();
+		width = t.getWidth();
+		heightMap = t.getBufferedImage();
 		this.setLayout(null);
 		
-		setPreferredSize(new Dimension(blockSize*width,blockSize*length));
+		setPreferredSize(new Dimension(width*3,length*3));
 		
 		for(int i = 0; i < 9; ++i){
 			herdMarks[i] = new ArrayList<HerdAnimalMarker>();

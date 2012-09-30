@@ -64,22 +64,6 @@ public class Terrain{
 				double currHeight = landscape[x][y];
 				float heightPercent = (float)((currHeight-lowest)/range);
 				
-				// coloured heightmap using overflow of the RGB values
-				/*float red = 0, blue = 0; 	// initialize blue & green to zero 
-				float green = heightPercent;
-				if (green > 1){ 	// colour overflow spills into the next color
-					red = green-1; 
-					green = 1;
-					if (red > 1){
-						blue = red - 1;
-						red = 1;
-						if (blue > 1){
-							blue = 1;
-						}
-					}
-				}
-				imageCreator.setColor(new Color(red, green, blue));*/
-				
 				imageCreator.setColor(new Color(heightPercent, heightPercent, heightPercent));
 				imageCreator.fillRect(x, y, 1, 1);
 			}

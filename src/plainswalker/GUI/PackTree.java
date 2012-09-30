@@ -6,6 +6,8 @@ package plainswalker.GUI;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 
 public class PackTree {
 
@@ -25,6 +27,18 @@ public class PackTree {
 		
 		packTree = new JTree(root);
 		
+	}
+
+	public void reset() {
+		
+		DefaultTreeModel model = (DefaultTreeModel) packTree.getModel();
+		
+		for(int i = 0; i < 9; ++i){
+			
+			for(int j = model.getChildCount(packs[i])-1; j >= 0; --j)
+				model.removeNodeFromParent((MutableTreeNode) packs[i].getChildAt(j));
+		
+		}
 	}
 	
 }

@@ -204,6 +204,8 @@ public class Interface implements Observer{
 	public void addGrid(Terrain t, Controller con){
 		
 		hTree.reset();
+		wTree.reset();
+		pTree.reset();
 		grid = new Grid(t);
 		GridViewport gridView = new GridViewport();
 		gridView.setView(grid);

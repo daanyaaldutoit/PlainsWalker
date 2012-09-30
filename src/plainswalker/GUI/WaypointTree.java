@@ -6,6 +6,8 @@ package plainswalker.GUI;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 
 public class WaypointTree {
 	
@@ -24,6 +26,19 @@ public class WaypointTree {
 		}
 		
 		wayTree = new JTree(root);
+		
+	}
+
+	public void reset() {
+		
+		DefaultTreeModel model = (DefaultTreeModel) wayTree.getModel();
+		
+		for(int i = 0; i < 9; ++i){
+			
+			for(int j = model.getChildCount(routes[i])-1; j >= 0; --j)
+				model.removeNodeFromParent((MutableTreeNode) routes[i].getChildAt(j));
+		
+		}
 		
 	}
 
